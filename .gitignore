@@ -1,0 +1,5 @@
+echo node_modules/ > .gitignore
+echo .env >> .gitignore
+echo __pycache__/ >> .gitignore
+echo .vscode/ >> .gitignore
+echo dist/ >> .gitignore
