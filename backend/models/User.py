@@ -4,8 +4,7 @@ from sqlalchemy.sql import func
 from enum import Enum  # This is Python's Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DateTime
-
-Base = declarative_base()
+from config.database import Base
 
 # Define your role enum using Python's Enum
 class RoleEnum(str, Enum):

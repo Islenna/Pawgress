@@ -4,6 +4,8 @@ from typing import List
 from config.database import get_db
 from models.User import User as UserModel
 from schemas.user_schema import UserSchema, UserCreate
+from utils.auth import hash_password
+
 
 router = APIRouter(
     prefix="/users",
@@ -11,13 +13,23 @@ router = APIRouter(
 )
 
 # Create a new user
+
 @router.post("/", response_model=UserSchema)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = UserModel(**user.dict())
+    hashed_pw = hash_password(user.password)
+    db_user = UserModel(
+        username=user.username,
+        email=user.email,
+        hashed_password=hashed_pw,
+        license_number=user.license_number,
+        license_expiry=user.license_expiry
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
 # Get all users
 @router.get("/", response_model=List[UserSchema])
 def get_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
@@ -47,8 +59,13 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
-    for key, value in user.dict().items():
+    user_data = user.dict()
+    if 'password' in user_data:
+        user_data['hashed_password'] = hash_password(user_data.pop('password'))
+
+    for key, value in user_data.items():
         setattr(db_user, key, value)
+
     
     db.commit()
     db.refresh(db_user)
