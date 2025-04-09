@@ -9,10 +9,11 @@
 
 ### Backend
 - [x] CRUD for all routes (Users, Skills, Categories)
-- [ ] Testing
+- [ ] Duplicate Protections
+- [x] Testing
 - [ ] Auth (JWT)
 - [ ] Logging
-- [ ] Sign-off / skill ranking system (e.g. 1–5 scale, signed by admin)
+- [x] Sign-off / skill ranking system (e.g. 1–5 scale, signed by admin)
 - [ ] Rich response models (e.g., user with category and skills nested)
 
 ### Future Ideas

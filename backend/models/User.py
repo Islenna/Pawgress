@@ -5,6 +5,8 @@ from enum import Enum  # This is Python's Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DateTime
 from config.database import Base
+from models.Proficiency import Proficiency
+
 
 # Define your role enum using Python's Enum
 class RoleEnum(str, Enum):
@@ -30,4 +32,10 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    skills = relationship("Skill", back_populates="user")
+
+    proficiencies = relationship(
+    "Proficiency",
+    back_populates="user",
+    foreign_keys="Proficiency.user_id"
+)
+

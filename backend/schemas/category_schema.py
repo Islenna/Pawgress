@@ -1,17 +1,17 @@
 from pydantic import BaseModel
+from typing import Optional, List
+from schemas.skill_schema import Skill  # if you want to nest skills in response
 
 class CategoryBase(BaseModel):
     name: str
-    description: str
+    description: Optional[str] = None
 
 class CategoryCreate(CategoryBase):
     pass
 
 class Category(CategoryBase):
     id: int
-    skills: list[int] = []  # Assuming skills is a list of skill IDs
+    skills: List[Skill] = []
 
     class Config:
-        orm_mode = True  # Enable ORM mode to read data as attributes
-        arbitrary_types_allowed = True
-
+        from_attributes = True

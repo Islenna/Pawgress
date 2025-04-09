@@ -1,28 +1,22 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from config.database import Base
+from typing import Optional
+from models.Proficiency import Proficiency 
+
 
 class Skill(Base):
     __tablename__ = "skills"
-    
-    # Primary key for the skill
-    id = Column(Integer, primary_key=True, index=True)
-    
-    # Basic fields
-    name = Column(String(255))
-    description = Column(Text, nullable=True)
-    proficiency = Column(Text, nullable=True)  # Assuming proficiency is an integer value
 
-    # Foreign keys to associate the skill with a user and category
-    user_id = Column(Integer, ForeignKey("users.id"), index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"), index=True)
-    
-    # Timestamp fields for created_at and updated_at
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(255))
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-    # Relationships to User and Category
-    user = relationship("User", back_populates="skills")
+    category_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"), nullable=True)
+
+    created_at: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=func.now())
+    updated_at: Mapped[Optional[DateTime]] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
+
     category = relationship("Category", back_populates="skills")
+    proficiencies = relationship("Proficiency", back_populates="skill")

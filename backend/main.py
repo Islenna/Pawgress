@@ -58,6 +58,8 @@ app.add_middleware(
 from routes.users import UserRouter
 from routes.skills import SkillRouter
 from routes.categories import CategoryRouter
+from routes.proficiencies import ProficiencyRouter
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(SkillRouter, prefix="/api", tags=["Skills"])
 app.include_router(CategoryRouter, prefix="/api", tags=["Categories"])
+app.include_router(ProficiencyRouter, prefix="/api", tags=["Proficiencies"])
