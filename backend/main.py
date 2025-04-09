@@ -9,6 +9,7 @@ from sqlalchemy.exc import OperationalError
 from config.database import Base
 from models.User import User
 from models.Skill import Skill
+from models.Category import Category
 
 # Load environment variables
 load_dotenv()
@@ -56,5 +57,7 @@ app.add_middleware(
 #Routes
 from routes.users import UserRouter
 from routes.skills import SkillRouter
+from routes.categories import CategoryRouter
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(SkillRouter, prefix="/api", tags=["Skills"])
+app.include_router(CategoryRouter, prefix="/api", tags=["Categories"])

@@ -17,14 +17,14 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    username = Column(String(255), unique=True, index=True)
+    email = Column(String(255), unique=True, index=True)
+    hashed_password = Column(String(255))
     is_active = Column(Boolean, default=True)
     role = Column(SqlEnum(RoleEnum), default=RoleEnum.user)  # <-- SQLAlchemy Enum
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    license_number = Column(String, unique=True, nullable=True)
+    first_name = Column(String(255), nullable=True)
+    last_name = Column(String(255), nullable=True)
+    license_number = Column(String(255), unique=True, nullable=True)
     license_expiry = Column(Date, nullable=True)
 
     created_at = Column(DateTime, default=func.now())

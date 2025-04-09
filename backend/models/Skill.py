@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
@@ -11,9 +11,9 @@ class Skill(Base):
     id = Column(Integer, primary_key=True, index=True)
     
     # Basic fields
-    name = Column(String)
-    description = Column(String, nullable=True)
-    proficiency = Column(Integer, nullable=True)  # Assuming proficiency is an integer value
+    name = Column(String(255))
+    description = Column(Text, nullable=True)
+    proficiency = Column(Text, nullable=True)  # Assuming proficiency is an integer value
 
     # Foreign keys to associate the skill with a user and category
     user_id = Column(Integer, ForeignKey("users.id"), index=True)
