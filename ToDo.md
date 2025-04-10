@@ -11,7 +11,7 @@
 - [x] CRUD for all routes (Users, Skills, Categories)
 - [ ] Duplicate Protections
 - [x] Testing
-- [ ] Auth (JWT)
+- [x] Auth (JWT)
 - [ ] Logging
 - [x] Sign-off / skill ranking system (e.g. 1–5 scale, signed by admin)
 - [ ] Rich response models (e.g., user with category and skills nested)

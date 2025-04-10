@@ -18,7 +18,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(data={"sub": user.username, "role": user.role})
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    
     return {"access_token": access_token, "token_type": "bearer"}
 
 AuthRouter = router
