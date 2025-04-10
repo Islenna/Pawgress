@@ -6,6 +6,7 @@ from models.Proficiency import Proficiency as ProficiencyModel
 from schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
 from utils.dependencies import get_current_user  
 from models.User import User as UserModel
+from utils.logger import log_action
 
 router = APIRouter(
     prefix="/proficiencies",
@@ -18,6 +19,7 @@ def create_proficiency(prof: ProficiencyCreate,
                     db: Session = Depends(get_db),
                     current_user: UserModel = Depends(get_current_user)):
     db_prof = ProficiencyModel(**prof.dict())
+    log_action(current_user, "create_proficiency", extra={"proficiency": prof.name})
     db.add(db_prof)
     db.commit()
     db.refresh(db_prof)
@@ -51,6 +53,7 @@ def update_proficiency(prof_id: int,
         raise HTTPException(status_code=404, detail="Proficiency not found")
     for key, value in updated.dict().items():
         setattr(prof, key, value)
+    log_action(current_user, "update_proficiency", target=f"proficiency {prof_id}", extra={"updated_fields": updated.dict()})
     db.commit()
     db.refresh(prof)
     return prof
@@ -63,6 +66,7 @@ def delete_proficiency(prof_id: int,
     prof = db.query(ProficiencyModel).filter(ProficiencyModel.id == prof_id).first()
     if not prof:
         raise HTTPException(status_code=404, detail="Proficiency not found")
+    log_action(current_user, "delete_proficiency", target=f"proficiency {prof_id}", extra={"proficiency": prof.name})
     db.delete(prof)
     db.commit()
     return prof

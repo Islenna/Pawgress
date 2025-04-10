@@ -7,6 +7,8 @@ from schemas.user_schema import UserSchema, UserCreate
 from utils.user_utils import create_and_return_user
 from utils.auth import hash_password
 from utils.dependencies import get_current_user  # <-- this is the important swap
+from utils.logger import log_action
+from schemas.user_schema import UserWithProficiencies
 
 router = APIRouter(
     prefix="/users",
@@ -21,7 +23,18 @@ def create_user(user: UserCreate, db: Session = Depends(get_db), current_user: U
 # Register a new user (public route)
 @router.post("/register", response_model=UserSchema)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    return create_and_return_user(user, db)
+    # Check if the user already exists
+    existing_user = db.query(UserModel).filter(UserModel.username == user.username).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    
+    # Create the user once
+    created = create_and_return_user(user, db)
+
+    # Log the action
+    log_action(created, "register", extra={"username": created.username})
+    
+    return created
 
 # Get all users (protected)
 @router.get("/", response_model=List[UserSchema])
@@ -29,7 +42,7 @@ def get_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), cur
     return db.query(UserModel).offset(skip).limit(limit).all()
 
 # Get a user by ID (protected)
-@router.get("/{user_id}", response_model=UserSchema)
+@router.get("/{user_id}", response_model=UserWithProficiencies)
 def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if not user:
@@ -45,7 +58,7 @@ def get_user_by_username(username: str, db: Session = Depends(get_db), current_u
     return user
 
 # Get me (protected)
-@router.get("/me", response_model=UserSchema)
+@router.get("/me", response_model=UserWithProficiencies)
 def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
 
@@ -63,6 +76,8 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), c
     for key, value in user_data.items():
         setattr(db_user, key, value)
 
+    log_action(current_user, "update", target=f"user {user_id}", extra={"updated_fields": user_data})
+
     db.commit()
     db.refresh(db_user)
     return db_user
@@ -74,6 +89,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: UserM
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    log_action(current_user, "delete", target=f"user {user_id}", extra={"username": db_user.username})
     db.delete(db_user)
     db.commit()
     return db_user

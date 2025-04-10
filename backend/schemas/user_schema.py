@@ -3,6 +3,7 @@
 from pydantic import BaseModel
 from datetime import date
 from typing import Optional
+from schemas.proficiency_schema import Proficiency
 
 class UserBase(BaseModel):
     username: str
@@ -21,3 +22,9 @@ class UserSchema(UserBase):  # Renamed from `User` to avoid collision with model
     class Config:
         from_attributes = True
 
+class UserWithProficiencies(UserSchema):
+    skills: list = []  # Include skills in the response
+
+    class Config:
+        from_attributes = True
+        orm_mode = True  # Enable ORM mode for SQLAlchemy compatibility

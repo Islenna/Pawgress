@@ -1,2 +1,4 @@
 .env
+# Ignore seed and sensitive scripts
+scripts/seed.py
 seed.py

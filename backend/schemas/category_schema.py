@@ -15,3 +15,10 @@ class Category(CategoryBase):
 
     class Config:
         from_attributes = True
+
+class CategoryWithSkills(CategoryBase):
+    skills: List[Skill] = []  # Include skills in the response
+
+    class Config:
+        from_attributes = True
+        orm_mode = True  # Enable ORM mode for SQLAlchemy compatibility

@@ -16,3 +16,9 @@ class Skill(SkillBase):
     class Config:
         from_attributes = True
 
+class SkillWithCategory(SkillBase):
+    category: Optional[str] = None  # Include category name
+
+    class Config:
+        from_attributes = True
+        orm_mode = True  # Enable ORM mode for SQLAlchemy compatibility
