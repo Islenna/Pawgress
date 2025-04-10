@@ -59,7 +59,9 @@ from routes.users import UserRouter
 from routes.skills import SkillRouter
 from routes.categories import CategoryRouter
 from routes.proficiencies import ProficiencyRouter
+from routes.auth import AuthRouter
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(SkillRouter, prefix="/api", tags=["Skills"])
 app.include_router(CategoryRouter, prefix="/api", tags=["Categories"])
 app.include_router(ProficiencyRouter, prefix="/api", tags=["Proficiencies"])
+app.include_router(AuthRouter, prefix="/api", tags=["Auth"])

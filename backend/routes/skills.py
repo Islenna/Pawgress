@@ -4,6 +4,8 @@ from typing import List
 from config.database import get_db
 from models.Skill import Skill as SkillModel
 from schemas.skill_schema import Skill as SkillSchema, SkillCreate
+from utils.dependencies import get_current_user  # Assuming you have a function to get the current user
+from models.User import User as UserModel
 
 router = APIRouter(
     prefix="/skills",
@@ -12,8 +14,16 @@ router = APIRouter(
 
 # Create a skill
 @router.post("/", response_model=SkillSchema)
-def create_skill(skill: SkillCreate, db: Session = Depends(get_db)):
+def create_skill(skill: SkillCreate, 
+                db: Session = Depends(get_db),
+                current_user: UserModel = Depends(get_current_user)):
     db_skill = SkillModel(**skill.dict())
+
+    # Check if the skill already exists
+    existing_skill = db.query(SkillModel).filter(SkillModel.name == skill.name).first()
+    if existing_skill:
+        raise HTTPException(status_code=400, detail="Skill already exists")
+    
     db.add(db_skill)
     db.commit()
     db.refresh(db_skill)
@@ -21,12 +31,16 @@ def create_skill(skill: SkillCreate, db: Session = Depends(get_db)):
 
 # Get all skills
 @router.get("/", response_model=List[SkillSchema])
-def get_skills(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def get_skills(skip: int = 0, limit: int = 10, 
+            db: Session = Depends(get_db),
+            current_user: UserModel = Depends(get_current_user)):
     return db.query(SkillModel).offset(skip).limit(limit).all()
 
 # Get skill by ID
 @router.get("/{skill_id}", response_model=SkillSchema)
-def get_skill(skill_id: int, db: Session = Depends(get_db)):
+def get_skill(skill_id: int, 
+            db: Session = Depends(get_db),
+            current_user: UserModel = Depends(get_current_user)):
     skill = db.query(SkillModel).filter(SkillModel.id == skill_id).first()
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
@@ -34,7 +48,9 @@ def get_skill(skill_id: int, db: Session = Depends(get_db)):
 
 # Get skill by name
 @router.get("/name/{name}", response_model=SkillSchema)
-def get_skill_by_name(name: str, db: Session = Depends(get_db)):
+def get_skill_by_name(name: str, 
+                    db: Session = Depends(get_db),
+                    current_user: UserModel = Depends(get_current_user)):
     skill = db.query(SkillModel).filter(SkillModel.name == name).first()
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
@@ -42,7 +58,9 @@ def get_skill_by_name(name: str, db: Session = Depends(get_db)):
 
 # Update skill
 @router.put("/{skill_id}", response_model=SkillSchema)
-def update_skill(skill_id: int, skill: SkillCreate, db: Session = Depends(get_db)):
+def update_skill(skill_id: int, skill: SkillCreate, 
+                db: Session = Depends(get_db),
+                current_user: UserModel = Depends(get_current_user)):
     db_skill = db.query(SkillModel).filter(SkillModel.id == skill_id).first()
     if not db_skill:
         raise HTTPException(status_code=404, detail="Skill not found")
@@ -56,7 +74,9 @@ def update_skill(skill_id: int, skill: SkillCreate, db: Session = Depends(get_db
 
 # Delete skill
 @router.delete("/{skill_id}", response_model=SkillSchema)
-def delete_skill(skill_id: int, db: Session = Depends(get_db)):
+def delete_skill(skill_id: int, 
+                db: Session = Depends(get_db),
+                current_user: UserModel = Depends(get_current_user)):
     db_skill = db.query(SkillModel).filter(SkillModel.id == skill_id).first()
     if not db_skill:
         raise HTTPException(status_code=404, detail="Skill not found")

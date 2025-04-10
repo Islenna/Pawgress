@@ -9,6 +9,9 @@ A veterinary nurse skill and certification tracking app
   - [Installation](#installation)
   - [Usage](#usage)
   - [Features](#features)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
 ## Installation
 
@@ -42,3 +45,15 @@ This app helps veterinary hospitals track and sign off on the skill proficiency 
 - Role-based access (admin vs user)
 - Future: Continuing Education (CE) credit tracking
 - Future: Email reminders for license renewal deadlines
+
+## Contributing
+
+Pull requests are welcome! For major changes, open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the [License Name] License — see the LICENSE.md file for details.
+
+## Acknowledgments
+
+Inspired by the real needs of veterinary technicians and nurses. ❤️
