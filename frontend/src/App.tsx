@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +25,7 @@ function App() {
         </button>
         <div className="flex flex-col items-center justify-center min-h-svh">
           <Button>Click me</Button>
+          <Card> Card stuff </Card>
         </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
