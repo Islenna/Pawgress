@@ -3,9 +3,11 @@
 
 ### Frontend
 - [ ] Pick a layout/design
-- [ ] Styling (Tailwind? Shadcn?)
+- [x] Styling (Tailwind + Shadcn)
 - [ ] User dashboard and admin dashboard components
 - [ ] UserCard and SkillCard display logic
+- [ ] Image upload to track CE
+- [ ] 
 
 ### Backend
 - [x] CRUD for all routes (Users, Skills, Categories)

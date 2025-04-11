@@ -1,10 +1,13 @@
+// src/types/index.ts
 export interface User {
     id: number;
     username: string;
     email: string;
     role: "user" | "admin" | "superuser";
-    skills?: string[]; // Optional for creation
-    }
+    is_active: boolean;
+    license_number?: string | null;
+    license_expiry?: string | null; // Usually comes as a string from JSON
+}
 
 export interface Skill {
     id: number;
