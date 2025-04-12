@@ -32,7 +32,7 @@ def create_category(category: CategoryCreate,
 
 #Get all categories
 @router.get("/", response_model=List[CategorySchema])
-def get_categories(skip: int = 0, limit: int = 10, 
+def get_categories(skip: int = 0, limit: int = 20, 
                 db: Session = Depends(get_db),
                 current_user: UserModel = Depends(get_current_user)):
     return db.query(CategoryModel).offset(skip).limit(limit).all()

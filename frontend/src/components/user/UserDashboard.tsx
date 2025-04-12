@@ -1,6 +1,7 @@
 import { useAuth } from "@/lib/authContext"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 const UserDashboard = () => {
     const { user, logout } = useAuth()
@@ -21,7 +22,14 @@ const UserDashboard = () => {
                     <p><strong>License Expiry:</strong>
                         {user.license_expiry ? new Date(user.license_expiry).toLocaleDateString() : "Not set"}
                     </p>
-
+                    <div className="flex justify-end gap-2">
+                        <Button asChild>
+                            <Link to="/skills">View Skills</Link>
+                        </Button>
+                        <Button variant="destructive" onClick={logout}>
+                            Log out
+                        </Button>
+                    </div>
                 </CardContent>
             </Card>
 

@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session, joinedload
 from typing import List
 from config.database import get_db
 from models.User import User as UserModel
 from schemas.user_schema import UserSchema, UserCreate
 from utils.user_utils import create_and_return_user
 from utils.auth import hash_password
-from utils.dependencies import get_current_user  # <-- this is the important swap
+from utils.dependencies import get_current_user
 from utils.logger import log_action
 from schemas.user_schema import UserWithProficiencies
+from models.Proficiency import Proficiency as ProficiencyModel
+from schemas.proficiency_schema import ProficiencyWithSkill
 
 router = APIRouter(
     prefix="/users",
@@ -41,6 +43,25 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 def get_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     return db.query(UserModel).offset(skip).limit(limit).all()
 
+# Get me (protected)
+@router.get("/me", response_model=UserWithProficiencies)
+def get_me(current_user: UserModel = Depends(get_current_user)):
+    return current_user
+
+# Get user with proficiencies (protected)
+@router.get("/mine", response_model=List[ProficiencyWithSkill])
+def get_my_proficiencies(
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    proficiencies = (
+        db.query(ProficiencyModel)
+        .options(joinedload(ProficiencyModel.skill))
+        .filter(ProficiencyModel.user_id == current_user.id)
+        .all()
+    )
+    return proficiencies
+
 # Get a user by ID (protected)
 @router.get("/{user_id}", response_model=UserWithProficiencies)
 def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
@@ -56,11 +77,6 @@ def get_user_by_username(username: str, db: Session = Depends(get_db), current_u
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
-
-# Get me (protected)
-@router.get("/me", response_model=UserWithProficiencies)
-def get_me(current_user: UserModel = Depends(get_current_user)):
-    return current_user
 
 # Update a user by ID (protected)
 @router.put("/{user_id}", response_model=UserSchema)

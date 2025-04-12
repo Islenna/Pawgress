@@ -9,9 +9,18 @@ export interface User {
     license_expiry?: string | null; // Usually comes as a string from JSON
 }
 
-export interface Skill {
+export type Skill = {
     id: number;
     name: string;
-    category: string;
-    isSignedOff: boolean;
-}
+    category_id: number;
+    category_name: string;
+    description: string;
+    proficiency?: number;
+};
+
+export type Category = {
+    id: number;
+    name: string;
+    description: string;
+    skills: Skill[];
+};

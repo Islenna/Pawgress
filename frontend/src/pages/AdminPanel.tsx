@@ -2,6 +2,8 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import CreateCategory from "@/components/category/CreateCategory"
 import CreateSkill from "@/components/skill/CreateSkill"
+import CategoryTable from "@/components/category/CategoryTable"
+import SkillTable from "@/components/skill/SkillTable"
 
 const AdminPanel = () => {
     return (
@@ -16,11 +18,13 @@ const AdminPanel = () => {
 
                 <TabsContent value="categories" className="space-y-4">
                     <CreateCategory />
+                    <CategoryTable />
                     {/* CategoryTable will go here */}
                 </TabsContent>
 
                 <TabsContent value="skills" className="space-y-4">
                     <CreateSkill />
+                    <SkillTable />
                     {/* SkillTable will go here */}
                 </TabsContent>
             </Tabs>

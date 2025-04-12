@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard'
 import UserDashboard from './components/user/UserDashboard'
 import Navbar from './components/layout/Navbar'
 import AdminPanel from '@/pages/AdminPanel'
-
+import SkillsPage from '@/components/user/SkillsPage'
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +16,8 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/me" element={<UserDashboard />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/skills" element={<SkillsPage />} />
+
         </Routes>
       </AuthProvider>
     </BrowserRouter>

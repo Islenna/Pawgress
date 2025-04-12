@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select"
 export type Field = {
     name: string
     label: string
@@ -50,20 +56,22 @@ const Form = ({ fields, onSubmit, defaultValues = {} }: FormProps) => {
                         />
                     )}
                     {field.type === "select" && field.options && (
-                        <select
-                            id={field.name}
-                            className="w-full border p-2 rounded"
-                            value={formData[field.name] || ""}
-                            onChange={(e) => handleChange(field.name, e.target.value)}
-                        >
-                            <option value="">Select one...</option>
-                            {field.options.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
+                        <Select onValueChange={(val) => handleChange(field.name, val)}>
+                            <SelectTrigger id={field.name}>
+                                <SelectValue placeholder="Select one..." />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-72 overflow-y-auto z-50">
+                                {field.options?.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+
                     )}
+                    
                 </div>
             ))}
             <Button type="submit">Submit</Button>
