@@ -38,4 +38,6 @@ class User(Base):
     back_populates="user",
     foreign_keys="Proficiency.user_id"
 )
+    ce_records = relationship("CERecord", back_populates="user", cascade="all, delete")
+
 

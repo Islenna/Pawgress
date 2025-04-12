@@ -75,3 +75,6 @@
 | 3     | Independent  | Can perform confidently without help                 |
 | 4     | Competent    | Trusted to handle this skill in tough scenarios      |
 | 5     | Mentor       | Can teach and support others in mastering it         |
+
+## Pre-Launch
+-[] Adjust alembic.ini

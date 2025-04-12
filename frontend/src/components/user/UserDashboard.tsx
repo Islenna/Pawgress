@@ -22,6 +22,10 @@ const UserDashboard = () => {
                     <p><strong>License Expiry:</strong>
                         {user.license_expiry ? new Date(user.license_expiry).toLocaleDateString() : "Not set"}
                     </p>
+                    <Button variant="secondary">
+                        <Link to="/ce">CE Management</Link>
+                    </Button>
+
                     <div className="flex justify-end gap-2">
                         <Button asChild>
                             <Link to="/skills">View Skills</Link>
