@@ -1,7 +1,11 @@
+# schemas/proficiency_schema.py
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-from schemas.skill_schema import Skill  # Assuming you already have this
+
+class SignedOffByUser(BaseModel):
+    id: int
+    username: str
 
 class ProficiencyBase(BaseModel):
     user_id: int
@@ -15,25 +19,15 @@ class ProficiencyCreate(ProficiencyBase):
 
 class Proficiency(ProficiencyBase):
     id: int
+    signed_off_by_user: Optional[SignedOffByUser]
 
     class Config:
-        from_attributes = True
-        
-class SkillShort(BaseModel):
+        orm_mode = True
+
+class ProficiencyWithSkill(ProficiencyBase):
     id: int
-    name: str
-    description: str
+    skill_name: str
+    signed_off_by_user: Optional[SignedOffByUser]
 
     class Config:
-        from_attributes = True
-class ProficiencyWithSkill(BaseModel):
-    id: int
-    user_id: int
-    skill_id: int
-    proficiency: int
-    signed_off_by: Optional[int] = None
-    signed_off_at: Optional[datetime] = None
-    skill: SkillShort
-
-    class Config:
-        from_attributes = True
+        orm_mode = True

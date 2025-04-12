@@ -33,7 +33,7 @@ def create_skill(skill: SkillCreate,
 
 # Get all skills
 @router.get("/", response_model=List[SkillSchema])
-def get_skills(skip: int = 0, limit: int = 10, 
+def get_skills(skip: int = 0, limit: int = 500, 
             db: Session = Depends(get_db),
             current_user: UserModel = Depends(get_current_user)):
     return db.query(SkillModel).offset(skip).limit(limit).all()

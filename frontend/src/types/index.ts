@@ -24,3 +24,14 @@ export type Category = {
     description: string;
     skills: Skill[];
 };
+
+export type Proficiency = {
+    id: number;
+    user_id: number;
+    skill_id: number;
+    proficiency: number;
+    signed_off_by?: number | null;
+    signed_off_at?: string | null; // Usually comes as a string from 
+    
+};
+

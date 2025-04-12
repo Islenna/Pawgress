@@ -1,8 +1,13 @@
+// src/components/skill/CreateSkill.tsx
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
 import Form, { Field } from "../shared/Form"
 
-const CreateSkill = () => {
+type CreateSkillProps = {
+    onSuccess: () => void
+}
+
+const CreateSkill = ({ onSuccess }: CreateSkillProps) => {
     const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string }[]>([])
 
     useEffect(() => {
@@ -18,6 +23,7 @@ const CreateSkill = () => {
     const handleSubmit = async (data: Record<string, string>) => {
         await axiosInstance.post("/skills", data)
         alert("Skill created!")
+        onSuccess() // 🧠 refetch data in parent
     }
 
     const fields: Field[] = [

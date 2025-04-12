@@ -1,85 +1,86 @@
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Button } from "@/components/ui/button"
+import SkillAccordion from "@/components/skill/SkillAccordion"
+import { Category, Skill } from "@/types"
+import { useAuth } from '@/lib/authContext'
+import CommonModal from "../shared/Modal"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import CommonModal from "@/components/shared/Modal"
-import { Skill, Category } from "@/types"
+import SearchBar from "@/components/shared/SearchBar"
 
-const SkillTable = () => {
-    const [skills, setSkills] = useState<Skill[]>([])
-    const [categories, setCategories] = useState<Category[]>([])
+type SkillTableProps = {
+    categories: Category[]
+    fetchData: () => void
+}
+
+const SkillTable = ({ categories, fetchData }: SkillTableProps) => {
+    const { user } = useAuth()
+    const [localCategories, setLocalCategories] = useState<Category[]>(categories)
     const [isOpen, setIsOpen] = useState(false)
     const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null)
     const [editedName, setEditedName] = useState("")
     const [editedDescription, setEditedDescription] = useState("")
     const [editedCategoryId, setEditedCategoryId] = useState<number | null>(null)
+    const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => {
-        const fetchData = async () => {
-            const [skillsRes, catsRes] = await Promise.all([
-                axiosInstance.get("/skills"),
-                axiosInstance.get("/categories"),
-            ])
-            setSkills(skillsRes.data)
-            setCategories(catsRes.data)
+        setLocalCategories(categories)
+    }, [categories])
+
+    const handleSave = async () => {
+        if (selectedSkill) {
+            const res = await axiosInstance.put(`/skills/${selectedSkill.id}`, {
+                name: editedName,
+                description: editedDescription,
+                category_id: editedCategoryId
+            })
+            await fetchData()
+            setIsOpen(false)
+            setSelectedSkill(null)
         }
-
-        fetchData()
-    }, [])
-
-    const toggleModal = (skillId: number) => {
-        const skill = skills.find(s => s.id === skillId) || null
-        setSelectedSkill(skill)
-        setEditedName(skill?.name || "")
-        setEditedDescription(skill?.description || "")
-        setEditedCategoryId(skill?.category_id || null)
-        setIsOpen(true)
     }
 
-    const handleDelete = async (id: number) => {
-        await axiosInstance.delete(`/skills/${id}`)
-        setSkills(prev => prev.filter(s => s.id !== id))
-    }
-
-    const handleSubmit = async () => {
-        if (!selectedSkill || editedCategoryId === null) return
-
-        const updated = {
-            ...selectedSkill,
-            name: editedName,
-            description: editedDescription,
-            category_id: editedCategoryId,
-        }
-
-        const res = await axiosInstance.put(`/skills/${selectedSkill.id}`, updated)
-        setSkills(prev => prev.map(s => (s.id === selectedSkill.id ? res.data : s)))
+    const handleDelete = async (skillId: number) => {
+        await axiosInstance.delete(`/skills/${skillId}`)
+        await fetchData()
         setIsOpen(false)
+        setSelectedSkill(null)
     }
+
+    const filteredCategories = localCategories
+        .map(cat => ({
+            ...cat,
+            skills: cat.skills.filter(skill =>
+                skill.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                skill.description.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        }))
+        .filter(cat => cat.skills.length > 0)
 
     return (
-        <div className="space-y-2">
-            {skills.map(skill => (
-                <div key={skill.id} className="flex justify-between items-center border p-2 rounded">
-                    <div>
-                        <p className="font-medium">{skill.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                            Category: {categories.find(c => c.id === skill.category_id)?.name || "Unknown"}
-                        </p>
-                    </div>
-                    <div className="space-x-2">
-                        <Button onClick={() => toggleModal(skill.id)} size="sm" variant="outline">Edit</Button>
-                        <Button onClick={() => handleDelete(skill.id)} size="sm" variant="destructive">Delete</Button>
-                    </div>
-                </div>
-            ))}
-
+        <div className="max-w-4xl mx-auto p-6 space-y-6">
+            <h2 className="text-2xl font-bold">All Skills</h2>
+            <SearchBar
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Search skills..."
+            />
+            <SkillAccordion
+                categories={filteredCategories}
+                editable={user?.role === "admin" || user?.role === "superuser"}
+                onEditClick={(skill) => {
+                    setSelectedSkill(skill)
+                    setEditedName(skill.name)
+                    setEditedDescription(skill.description)
+                    setEditedCategoryId(skill.category_id ?? null)
+                    setIsOpen(true)
+                }}
+            />
             <CommonModal
-                title="Edit Skill"
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                onSubmit={handleSubmit}
-                submitLabel="Save Changes"
+                title="Edit Skill"
+                onSave={handleSave}
             >
                 <div className="space-y-4">
                     <Input
@@ -93,16 +94,21 @@ const SkillTable = () => {
                         placeholder="Description"
                         className="min-h-[100px]"
                     />
-                    <select
-                        className="w-full p-2 rounded border"
-                        value={editedCategoryId ?? ""}
-                        onChange={(e) => setEditedCategoryId(Number(e.target.value))}
-                    >
-                        <option value="" disabled>Select category</option>
-                        {categories.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
-                    </select>
+                    <div className="flex justify-end">
+                        <button
+                            className="text-red-500 text-sm underline"
+                            onClick={async () => {
+                                if (selectedSkill) {
+                                    const confirm = window.confirm(`Are you sure you want to delete "${selectedSkill.name}"?`)
+                                    if (confirm) {
+                                        await handleDelete(selectedSkill.id)
+                                    }
+                                }
+                            }}
+                        >
+                            Delete Skill
+                        </button>
+                    </div>
                 </div>
             </CommonModal>
         </div>

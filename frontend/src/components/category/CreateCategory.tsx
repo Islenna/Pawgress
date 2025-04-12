@@ -1,10 +1,15 @@
 import Form, { Field } from './../shared/Form'
 import axiosInstance from "@/lib/axiosInstance"
 
-const CreateCategory = () => {
+type CreateCategoryProps = {
+    onSuccess: () => void
+}
+
+const CreateCategory = ({ onSuccess }: CreateCategoryProps) => {
     const handleSubmit = async (data: Record<string, string>) => {
         await axiosInstance.post("/categories", data)
         alert("Category created!")
+        onSuccess()
     }
 
     const fields: Field[] = [
