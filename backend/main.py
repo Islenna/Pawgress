@@ -11,6 +11,7 @@ from backend.models.User import User
 from backend.models.Skill import Skill
 from backend.models.Category import Category
 
+
 # Load environment variables
 load_dotenv()
 
@@ -45,6 +46,7 @@ app = FastAPI()
 def root():
     return {"message": "Hello from Pawgress!"}
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 #CORS
 app.add_middleware(
     CORSMiddleware,

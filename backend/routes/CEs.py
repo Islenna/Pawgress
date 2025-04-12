@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from typing import List
 from backend.config.database import get_db
@@ -7,12 +7,16 @@ from backend.utils.logger import log_action
 from backend.schemas.CE_schema import CERecordCreate, CERecord
 from backend.models.CERecord import CERecord as CERecordModel
 from backend.models.User import User as UserModel
+import os
+from uuid import uuid4
 
 router= APIRouter(
     prefix="/ce_records",
     tags=["CE Records"],
 )
 
+UPLOAD_DIR = "uploads/ce_docs"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 # Create a new CE record entry
 @router.post("/", response_model=CERecord)
 async def create_ce_record(
@@ -26,10 +30,32 @@ async def create_ce_record(
     db.commit()
     db.refresh(new_ce_record)
 
-    log_action(current_user, "create_ce_record", target=f"CE record {ce_record.title}", extra={"ce_record": ce_record.dict()})
+    log_action(current_user, "create_ce_record", target=f"CE record {ce_record.ce_description}", extra={"ce_record": ce_record.dict()})
 
     return new_ce_record
 
+#Upload a CE record file
+@router.post("/{ce_record_id}/upload")
+async def upload_ce_file(
+    ce_record_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user),
+):
+    ce_record = db.query(CERecordModel).filter(CERecordModel.id == ce_record_id).first()
+    if not ce_record:
+        raise HTTPException(status_code=404, detail="CE record not found")
+
+    filename = f"{uuid4()}_{file.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+
+    ce_record.ce_file_path = f"/static/ce_docs/{filename}"
+    db.commit()
+    log_action(current_user, "upload_ce_file", target=f"CE record {ce_record.ce_description}", extra={"file": filename})
+    return {"message": "File uploaded successfully", "filename": filename}
 
 # Get all CE records for a user
 @router.get("/user/{user_id}", response_model=List[CERecord])
@@ -67,7 +93,7 @@ async def update_ce_record(
     log_action(
         current_user,
         "update_ce_record",
-        target=f"CE record {ce_record.title}",
+        target=f"CE record {ce_record.ce_description}",
         extra={"ce_record": ce_record.dict()},
     )
     db.commit()
@@ -95,7 +121,7 @@ async def delete_ce_record(
     log_action(
         current_user,
         "delete_ce_record",
-        target=f"CE record {ce_record_to_delete.title}",
+        target=f"CE record {ce_record_to_delete.ce_description}",
         extra={"ce_record": ce_record_to_delete.__dict__},
     )
 
