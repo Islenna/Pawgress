@@ -5,7 +5,7 @@ from enum import Enum  # This is Python's Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DateTime
 from backend.config.database import Base
-from models.Proficiency import Proficiency
+from backend.models.Proficiency import Proficiency
 
 
 # Define your role enum using Python's Enum
@@ -39,5 +39,6 @@ class User(Base):
     foreign_keys="Proficiency.user_id"
 )
     ce_records = relationship("CERecord", back_populates="user", cascade="all, delete")
+    logs = relationship("ActivityLog", back_populates="user")
 
 

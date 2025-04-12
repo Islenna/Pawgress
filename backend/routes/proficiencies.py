@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from config.database import get_db
-from models.Proficiency import Proficiency as ProficiencyModel
-from schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
-from utils.dependencies import get_current_user  
-from utils.logger import log_action
-from models.Skill import Skill
-from models.User import User
+from backend.config.database import get_db
+from backend.models.Proficiency import Proficiency as ProficiencyModel
+from backend.schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
+from backend.utils.dependencies import get_current_user  
+from backend.utils.logger import log_action
+from backend.models.Skill import Skill
+from backend.models.User import User
 
 router = APIRouter(
     prefix="/proficiencies",
@@ -23,14 +23,15 @@ def create_proficiency(prof: ProficiencyCreate, db: Session = Depends(get_db), c
     target_user = db.query(User).filter(User.id == prof.user_id).first()
 
     log_action(
-        current_user,
-        "create_proficiency",
-        extra={
-            "skill": skill.name if skill else f"id:{prof.skill_id}",
-            "target_user": target_user.username if target_user else f"id:{prof.user_id}",
-            "proficiency": prof.proficiency
-        }
-    )
+    current_user,
+    "create_proficiency",
+    target=f"user:{target_user.username if target_user else prof.user_id}",
+    extra={
+        "skill": skill.name if skill else f"id:{prof.skill_id}",
+        "proficiency": prof.proficiency,
+        "signed_off_by": signed_by.username if signed_by else None
+    }
+)
 
     db.add(db_prof)
     db.commit()
@@ -85,7 +86,12 @@ def update_proficiency(prof_id: int, updated: ProficiencyCreate, db: Session = D
     for key, value in updated.dict().items():
         setattr(prof, key, value)
 
-    log_action(current_user, "update_proficiency", target=f"proficiency {prof_id}", extra={"updated_fields": updated.dict()})
+    log_action(
+    current_user,
+    "update_proficiency",
+    target=f"proficiency_id:{prof_id}",
+    extra=updated.dict()
+)
     
     db.commit()
     db.refresh(prof)
@@ -112,15 +118,15 @@ def delete_proficiency(prof_id: int,
     target_user = db.query(User).filter(User.id == prof.user_id).first()
 
     log_action(
-        current_user,
-        "delete_proficiency",
-        target=f"proficiency {prof_id}",
-        extra={
-            "skill": skill.name if skill else f"id:{prof.skill_id}",
-            "target_user": target_user.username if target_user else f"id:{prof.user_id}",
-            "proficiency": prof.proficiency
-        }
-    )
+    current_user,
+    "delete_proficiency",
+    target=f"proficiency_id:{prof_id}",
+    extra={
+        "skill": skill.name if skill else f"id:{prof.skill_id}",
+        "target_user": target_user.username if target_user else f"id:{prof.user_id}",
+        "proficiency": prof.proficiency
+    }
+)
 
     db.delete(prof)
     db.commit()

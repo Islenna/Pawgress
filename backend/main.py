@@ -7,9 +7,9 @@ from pathlib import Path
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from backend.config.database import Base
-from models.User import User
-from models.Skill import Skill
-from models.Category import Category
+from backend.models.User import User
+from backend.models.Skill import Skill
+from backend.models.Category import Category
 
 # Load environment variables
 load_dotenv()
@@ -55,12 +55,12 @@ app.add_middleware(
 )
 
 #Routes
-from routes.users import UserRouter
-from routes.skills import SkillRouter
-from routes.categories import CategoryRouter
-from routes.proficiencies import ProficiencyRouter
-from routes.CEs import CERouter
-from routes.auth import AuthRouter
+from backend.routes.users import UserRouter
+from backend.routes.skills import SkillRouter
+from backend.routes.categories import CategoryRouter
+from backend.routes.proficiencies import ProficiencyRouter
+from backend.routes.CEs import CERouter
+from backend.routes.auth import AuthRouter
 
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(SkillRouter, prefix="/api", tags=["Skills"])

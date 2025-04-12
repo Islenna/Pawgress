@@ -3,7 +3,7 @@
 from pydantic import BaseModel
 from datetime import date
 from typing import Optional
-from schemas.proficiency_schema import Proficiency
+from backend.schemas.proficiency_schema import Proficiency
 
 class UserBase(BaseModel):
     username: str

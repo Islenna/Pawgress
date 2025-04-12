@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session, joinedload
 from typing import List
-from config.database import get_db
-from models.User import User as UserModel
-from schemas.user_schema import UserSchema, UserCreate
-from utils.user_utils import create_and_return_user
-from utils.auth import hash_password
-from utils.dependencies import get_current_user
-from utils.logger import log_action
-from schemas.user_schema import UserWithProficiencies
-from models.Proficiency import Proficiency as ProficiencyModel
-from schemas.proficiency_schema import ProficiencyWithSkill
+from backend.config.database import get_db
+from backend.models.User import User as UserModel
+from backend.schemas.user_schema import UserSchema, UserCreate
+from backend.utils.user_utils import create_and_return_user
+from backend.utils.auth import hash_password
+from backend.utils.dependencies import get_current_user
+from backend.schemas.user_schema import UserWithProficiencies
+from backend.models.Proficiency import Proficiency as ProficiencyModel
+from backend.schemas.proficiency_schema import ProficiencyWithSkill
+from backend.utils.logger import log_action
 
 router = APIRouter(
     prefix="/users",
@@ -34,7 +34,12 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     created = create_and_return_user(user, db)
 
     # Log the action
-    log_action(created, "register", extra={"username": created.username})
+    log_action(
+        user=created,
+        action="register",
+        target=f"user {created.username}",
+        extra={"user": created.dict()}
+    )
     
     return created
 
@@ -92,7 +97,12 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), c
     for key, value in user_data.items():
         setattr(db_user, key, value)
 
-    log_action(current_user, "update", target=f"user {user_id}", extra={"updated_fields": user_data})
+    log_action(
+        user=current_user,
+        action="update_user",
+        target=f"user {user.username}",
+        extra={"user": user.dict()}
+    )
 
     db.commit()
     db.refresh(db_user)
@@ -105,7 +115,12 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: UserM
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    log_action(current_user, "delete", target=f"user {user_id}", extra={"username": db_user.username})
+    log_action(
+        user=current_user,
+        action="delete_user",
+        target=f"user {db_user.username}",
+        extra={"user": db_user.__dict__}
+    )
     db.delete(db_user)
     db.commit()
     return db_user

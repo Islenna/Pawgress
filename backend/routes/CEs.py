@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from config.database import get_db
-from utils.dependencies import get_current_user  
-from utils.logger import log_action
-from schemas.CE_schema import CERecordCreate, CERecord
-from models.CERecord import CERecord as CERecordModel
-from models.User import User as UserModel
+from backend.config.database import get_db
+from backend.utils.dependencies import get_current_user  
+from backend.utils.logger import log_action
+from backend.schemas.CE_schema import CERecordCreate, CERecord
+from backend.models.CERecord import CERecord as CERecordModel
+from backend.models.User import User as UserModel
 
 router= APIRouter(
     prefix="/ce_records",
@@ -26,12 +26,7 @@ async def create_ce_record(
     db.commit()
     db.refresh(new_ce_record)
 
-    log_action(
-        action="create",
-        model="CERecord",
-        user_id=current_user.id,
-        details={"ce_record_id": new_ce_record.id},
-    )
+    log_action(current_user, "create_ce_record", target=f"CE record {ce_record.title}", extra={"ce_record": ce_record.dict()})
 
     return new_ce_record
 
@@ -69,7 +64,12 @@ async def update_ce_record(
     # Update the CE record
     for key, value in ce_record.dict().items():
         setattr(ce_record_to_update, key, value)
-
+    log_action(
+        current_user,
+        "update_ce_record",
+        target=f"CE record {ce_record.title}",
+        extra={"ce_record": ce_record.dict()},
+    )
     db.commit()
     db.refresh(ce_record_to_update)
     return ce_record_to_update
@@ -93,10 +93,10 @@ async def delete_ce_record(
 
     # Log the action
     log_action(
-        action="delete",
-        model="CERecord",
-        user_id=current_user.id,
-        details={"ce_record_id": ce_record_id},
+        current_user,
+        "delete_ce_record",
+        target=f"CE record {ce_record_to_delete.title}",
+        extra={"ce_record": ce_record_to_delete.__dict__},
     )
 
     return ce_record_to_delete

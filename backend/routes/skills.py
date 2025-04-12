@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
-from config.database import get_db
-from models.Skill import Skill as SkillModel
-from schemas.skill_schema import Skill as SkillSchema, SkillCreate
-from schemas.category_schema import CategoryWithSkills
-from utils.dependencies import get_current_user  # Assuming you have a function to get the current user
-from models.User import User as UserModel
-from utils.logger import log_action
+from backend.config.database import get_db
+from backend.models.Skill import Skill as SkillModel
+from backend.schemas.skill_schema import Skill as SkillSchema, SkillCreate
+from backend.schemas.category_schema import CategoryWithSkills
+from backend.utils.dependencies import get_current_user  # Assuming you have a function to get the current user
+from backend.models.User import User as UserModel
+from backend.utils.logger import log_action
 
 router = APIRouter(
     prefix="/skills",
@@ -25,7 +25,7 @@ def create_skill(skill: SkillCreate,
     existing_skill = db.query(SkillModel).filter(SkillModel.name == skill.name).first()
     if existing_skill:
         raise HTTPException(status_code=400, detail="Skill already exists")
-    log_action(current_user, "create_skill", extra={"skill": skill.name})
+    log_action(current_user, "create_skill", target=f"skill {skill.name}", extra={"skill": skill.dict()})
     db.add(db_skill)
     db.commit()
     db.refresh(db_skill)
@@ -69,7 +69,7 @@ def update_skill(skill_id: int, skill: SkillCreate,
     
     for key, value in skill.dict().items():
         setattr(db_skill, key, value)
-    log_action(current_user, "update_skill", target=f"skill {skill_id}", extra={"updated_fields": skill.dict()})
+    log_action(current_user, "update_skill", target=f"skill {skill.name}", extra={"skill": skill.dict()})
     db.commit()
     db.refresh(db_skill)
     return db_skill
@@ -82,7 +82,7 @@ def delete_skill(skill_id: int,
     db_skill = db.query(SkillModel).filter(SkillModel.id == skill_id).first()
     if not db_skill:
         raise HTTPException(status_code=404, detail="Skill not found")
-    log_action(current_user, "delete_skill", target=f"skill {skill_id}", extra={"skill": db_skill.name})
+    log_action(current_user, "delete_skill", target=f"skill {db_skill.name}", extra={"skill": db_skill.__dict__})
 
     db.delete(db_skill)
     db.commit()

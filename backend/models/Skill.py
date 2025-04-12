@@ -3,7 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from backend.config.database import Base
 from typing import Optional
-from models.Proficiency import Proficiency 
+from backend.models.Proficiency import Proficiency 
 
 
 class Skill(Base):
