@@ -1,8 +1,8 @@
-"""Add CERecord model (cleaned)
+"""Add CERecord model
 
-Revision ID: 53488f641d99
+Revision ID: 620f9354de50
 Revises: 
-Create Date: 2025-04-12 12:04:04.078750
+Create Date: 2025-04-12 12:14:46.858403
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '53488f641d99'
+revision: str = '620f9354de50'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

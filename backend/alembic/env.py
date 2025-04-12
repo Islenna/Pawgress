@@ -2,6 +2,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from backend.models import User, Skill, Category, Proficiency, CERecord
 
 from alembic import context
 
@@ -18,7 +19,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from config.database import Base  # 👈 import your Base
+from backend.config.database import Base  # 👈 import your Base
 target_metadata = Base.metadata  # 👈 give Alembic your models
 
 

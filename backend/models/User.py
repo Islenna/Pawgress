@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from enum import Enum  # This is Python's Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DateTime
-from config.database import Base
+from backend.config.database import Base
 from models.Proficiency import Proficiency
 
 

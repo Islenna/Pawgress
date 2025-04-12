@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
-from config.database import Base
+from backend.config.database import Base
 from models.User import User
 from models.Skill import Skill
 from models.Category import Category
@@ -59,10 +59,12 @@ from routes.users import UserRouter
 from routes.skills import SkillRouter
 from routes.categories import CategoryRouter
 from routes.proficiencies import ProficiencyRouter
+from routes.CEs import CERouter
 from routes.auth import AuthRouter
 
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
 app.include_router(SkillRouter, prefix="/api", tags=["Skills"])
 app.include_router(CategoryRouter, prefix="/api", tags=["Categories"])
 app.include_router(ProficiencyRouter, prefix="/api", tags=["Proficiencies"])
+app.include_router(CERouter, prefix="/api", tags=["CEs"])
 app.include_router(AuthRouter, prefix="/api", tags=["Auth"])

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from config.database import Base
+from backend.config.database import Base
 from typing import Optional
 from models.Proficiency import Proficiency 
 

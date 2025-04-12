@@ -4,7 +4,7 @@ from typing import List
 from config.database import get_db
 from utils.dependencies import get_current_user  
 from utils.logger import log_action
-from schemas.CE_schema import CERecordCreate, CERecord, CERecordWithUser
+from schemas.CE_schema import CERecordCreate, CERecord
 from models.CERecord import CERecord as CERecordModel
 from models.User import User as UserModel
 
@@ -37,7 +37,7 @@ async def create_ce_record(
 
 
 # Get all CE records for a user
-@router.get("/user/{user_id}", response_model=List[CERecordWithUser])
+@router.get("/user/{user_id}", response_model=List[CERecord])
 async def get_ce_records_by_user(
     user_id: int,
     db: Session = Depends(get_db),
@@ -54,7 +54,7 @@ async def get_ce_records_by_user(
     return ce_records
 
 # Edit a CE record entry
-@router.put("/{ce_record_id}", response_model=CERecordWithUser)
+@router.put("/{ce_record_id}", response_model=CERecord)
 async def update_ce_record(
     ce_record_id: int,
     ce_record: CERecordCreate,
@@ -76,7 +76,7 @@ async def update_ce_record(
 
 
 # Delete a CE record entry
-@router.delete("/{ce_record_id}", response_model=CERecordWithUser)
+@router.delete("/{ce_record_id}", response_model=CERecord)
 async def delete_ce_record(
     ce_record_id: int,
     db: Session = Depends(get_db),

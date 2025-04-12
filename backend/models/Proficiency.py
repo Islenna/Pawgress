@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from config.database import Base
+from backend.config.database import Base
 
 
 # models/UserSkill.py
