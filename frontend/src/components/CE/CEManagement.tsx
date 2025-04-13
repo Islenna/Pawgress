@@ -81,6 +81,7 @@ const CEManagement = () => {
                 await axiosInstance.post(`/ce_records/${newRecordId}/upload`, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
                 })
+                toast.success("CE record created with file upload!")
             }
 
             // Refresh CE list
@@ -123,6 +124,7 @@ const CEManagement = () => {
             setRecords(updated.data)
             setEditingId(null)
             setEditUploadFile(null)
+
         } catch (err) {
             console.error("Error updating CE record", err)
             toast.error("Failed to update CE record.")

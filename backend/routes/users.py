@@ -7,7 +7,7 @@ from backend.schemas.user_schema import UserSchema, UserCreate
 from backend.utils.user_utils import create_and_return_user
 from backend.utils.auth import hash_password, verify_password
 from backend.utils.dependencies import get_current_user
-from backend.schemas.user_schema import UserWithProficiencies, PasswordUpdate
+from backend.schemas.user_schema import UserWithProficiencies, PasswordUpdate, UserUpdate
 from backend.models.Proficiency import Proficiency as ProficiencyModel
 from backend.schemas.proficiency_schema import ProficiencyWithSkill
 from backend.utils.logger import log_action
@@ -112,6 +112,7 @@ def update_password(
     db.commit()
 
     return {"message": "Password updated successfully"}
+
 # Get a user by ID (protected)
 @router.get("/{user_id}", response_model=UserWithProficiencies)
 def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
@@ -122,12 +123,18 @@ def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserMode
 
 # Update a user by ID (protected)
 @router.put("/{user_id}", response_model=UserSchema)
-def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def update_user(
+    user_id: int,
+    user: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_data = user.dict()
+    user_data = user.dict(exclude_unset=True)
+
     if "password" in user_data:
         user_data["hashed_password"] = hash_password(user_data.pop("password"))
 
@@ -137,13 +144,14 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), c
     log_action(
         user=current_user,
         action="update_user",
-        target=f"user {user.full_name}",
-        extra={"user": user.dict()}
+        target=f"user {db_user.full_name}",
+        extra={"user": user_data}
     )
 
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 # Delete a user by ID (protected)
 @router.delete("/{user_id}", response_model=UserSchema)

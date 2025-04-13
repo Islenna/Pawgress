@@ -27,10 +27,10 @@
 - [x] Display & edit user proficiencies
 - [x] Upload CE certificates (file upload + display)
 - [x] Show "Signed off by [Admin] on [Date]" in User view
-- [ ] Add color-coded levels to ProficiencySelector
+- [x] Add color-coded levels to ProficiencySelector
 - [ ] Add better mobile styling for SkillAccordion
 - [x] Filter/Search by category or skill in user view
-- [ ] Admin view/edit users (promote to admin, assign clinics)
+- [ ] Admin view/edit users (promote to admin, assign clinics [Implement])
 - [x] Settings/Profile page for user info and license details
 
 ---
@@ -45,6 +45,7 @@
 - [x] Duplicate protections on skill/category creation
 - [x] File upload endpoint for CE docs
 - [x] Endpoint to view CE upload history per user
+- [x] Better UX for finding users to assign proficiencies.
 - [ ] Endpoint for CSV export of skill data per clinic or user
 - [ ] Onboarding seeder for demo mode (create dummy users/data)
 

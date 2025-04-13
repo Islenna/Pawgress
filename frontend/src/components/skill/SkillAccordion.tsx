@@ -5,12 +5,12 @@ import { Category } from "@/types"
 import { Button } from "@/components/ui/button" // Needed for edit button
 import { Skill } from "@/types" // Needed for skill type
 
-const proficiencyLevels: Record<number, { label: string; description: string }> = {
-    1: { label: "Awareness", description: "Knows of the skill; has not performed it." },
-    2: { label: "Assisted", description: "Can perform with direct guidance." },
-    3: { label: "Independent", description: "Can perform confidently without help." },
-    4: { label: "Competent", description: "Trusted to handle this skill in tough scenarios." },
-    5: { label: "Mentor", description: "Can teach and support others in mastering it." },
+const proficiencyLevels: Record<number, { label: string; description: string; color: string }> = {
+    1: { label: "Awareness", description: "Knows of the skill; has not performed it.", color: "text-gray-400" },
+    2: { label: "Assisted", description: "Can perform with direct guidance.", color: "text-blue-400" },
+    3: { label: "Independent", description: "Can perform confidently without help.", color: "text-green-400" },
+    4: { label: "Competent", description: "Trusted to handle this skill in tough scenarios.", color: "text-yellow-400" },
+    5: { label: "Mentor", description: "Can teach and support others in mastering it.", color: "text-purple-400" },
 }
 
 type SkillAccordionProps = {
@@ -40,7 +40,7 @@ const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAcco
                                                     <div className="flex items-center gap-2">
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
-                                                                <span className="text-xs underline cursor-help text-muted-foreground">
+                                                                <span className={`text-xs underline cursor-help ${level?.color ?? "text-muted-foreground"}`}>
                                                                     Level: {level?.label ?? "None"}
                                                                 </span>
                                                             </TooltipTrigger>
