@@ -8,7 +8,7 @@ from backend.utils.dependencies import get_current_user
 from backend.utils.logger import log_action
 from backend.models.Skill import Skill
 from backend.models.User import User
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(
     prefix="/proficiencies",
@@ -22,11 +22,11 @@ def create_proficiency(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    db_prof = ProficiencyModel(**prof.dict())
+    db_prof = ProficiencyModel(**prof.model_dump())
     skill = db.query(Skill).filter(Skill.id == prof.skill_id).first()
     target_user = db.query(User).filter(User.id == prof.user_id).first()
     db_prof.signed_off_by = current_user.id
-    db_prof.signed_off_at = datetime.utcnow()
+    db_prof.signed_off_at = datetime.now(timezone.utc)
 
     db.add(db_prof)
     db.commit()
@@ -114,12 +114,12 @@ def update_proficiency(
     if not prof:
         raise HTTPException(status_code=404, detail="Proficiency not found")
 
-    for key, value in updated.dict().items():
+    for key, value in updated.model_dump().items():
         setattr(prof, key, value)
 
-    prof.signed_off_by = updated.signed_off_by  # ✅ this is what's missing
+    prof.signed_off_by = updated.signed_off_by
     if not prof.signed_off_at and prof.signed_off_by:
-        prof.signed_off_at = datetime.utcnow()
+        prof.signed_off_at = datetime.now(timezone.utc)
 
     db.commit()
     db.refresh(prof)
@@ -130,21 +130,21 @@ def update_proficiency(
         current_user,
         "update_proficiency",
         target=f"proficiency_id:{prof_id}",
-        extra=updated.dict()
+        extra=updated.model_dump()
     )
 
     return {
         **prof.__dict__,
         "signed_off_by_user": {
-    "id": signed_by.id,
-    "first_name": signed_by.first_name,
-    "last_name": signed_by.last_name
-}
-if signed_by else None
+            "id": signed_by.id,
+            "first_name": signed_by.first_name,
+            "last_name": signed_by.last_name
+        } if signed_by else None
     }
 
+
 # Delete a proficiency
-@router.delete("/{prof_id}", response_model=ProficiencySchema)
+@router.delete("/{prof_id}")
 def delete_proficiency(
     prof_id: int,
     db: Session = Depends(get_db),
@@ -170,6 +170,6 @@ def delete_proficiency(
 
     db.delete(prof)
     db.commit()
-    return prof
+    return {"detail": "Proficiency deleted successfully"}
 
 ProficiencyRouter = router

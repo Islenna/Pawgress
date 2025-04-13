@@ -48,7 +48,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         user=created,
         action="register_user",
         target=f"user {user.first_name} {user.last_name}",
-        extra={"user": user.dict()}
+        extra={"user": user.model_dump()}
     )
 
     return created

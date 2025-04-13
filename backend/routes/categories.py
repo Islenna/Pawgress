@@ -18,13 +18,13 @@ router = APIRouter(
 def create_category(category: CategoryCreate,
                     db: Session = Depends(get_db),
                     current_user: UserModel = Depends(get_current_user)):
-    db_category = CategoryModel(**category.dict())
+    db_category = CategoryModel(**category.model_dump())
 
     # Check if the category already exists
     existing_category = db.query(CategoryModel).filter(CategoryModel.name == category.name).first()
     if existing_category:
         raise HTTPException(status_code=400, detail="Category already exists")
-    log_action(current_user, "create_category", target=f"category {category.name}", extra={"category": category.dict()})
+    log_action(current_user, "create_category", target=f"category {category.name}", extra={"category": category.model_dump()})
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
@@ -67,9 +67,16 @@ def update_category(category_id: int,
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found")
     
-    for key, value in category.dict().items():
+    for key, value in category.model_dump(exclude_unset=True).items():
         setattr(db_category, key, value)
-    log_action(current_user, "update_category", target=f"category {category_id}", extra={"category": category.dict()})
+
+    log_action(
+        current_user,
+        "update_category",
+        target=f"category {category_id}",
+        extra={"category": category.model_dump(exclude_unset=True)}
+    )
+
     db.commit()
     db.refresh(db_category)
     return db_category

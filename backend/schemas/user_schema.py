@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field, EmailStr
 from datetime import date
 from typing import Optional
 from backend.schemas.proficiency_schema import Proficiency
+from datetime import datetime
 
 class UserBase(BaseModel):
     first_name: str
@@ -39,11 +40,11 @@ class UserWithProficiencies(UserSchema):
 class PasswordUpdate(BaseModel):
     current_password: str = Field(..., min_length=8)
     new_password: str = Field(..., min_length=8)
-
+    
 class UserUpdate(BaseModel):
-    first_name: Optional[str]
-    last_name: Optional[str]
-    email: Optional[EmailStr]
-    license_number: Optional[str]
-    license_expiry: Optional[str]
-    role: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    license_number: Optional[str] = None
+    license_expiry: Optional[datetime] = None
+    role: Optional[str] = None

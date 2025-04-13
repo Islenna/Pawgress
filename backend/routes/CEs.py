@@ -30,15 +30,16 @@ async def create_ce_record(
     db: Session = Depends(get_db),
     current_user: UserModel = Depends(get_current_user),
 ):
-    new_ce_record = CERecordModel(**ce_record.dict(), user_id=current_user.id)
+    new_ce_record = CERecordModel(**ce_record.model_dump(), user_id=current_user.id)
 
     db.add(new_ce_record)
     db.commit()
     db.refresh(new_ce_record)
 
-    log_action(current_user, "create_ce_record", target=f"CE record {ce_record.ce_description}", extra={"ce_record": ce_record.dict()})
+    log_action(current_user, "create_ce_record", target=f"CE record {ce_record.ce_description}", extra={"ce_record": ce_record.model_dump()})
 
     return new_ce_record
+    
 # Upload a CE record file
 @router.post("/{ce_record_id}/upload")
 async def upload_ce_file(
@@ -100,13 +101,13 @@ async def update_ce_record(
         raise HTTPException(status_code=404, detail="CE record not found")
 
     # Update the CE record
-    for key, value in ce_record.dict().items():
+    for key, value in ce_record.model_dump().items():
         setattr(ce_record_to_update, key, value)
     log_action(
         current_user,
         "update_ce_record",
         target=f"CE record {ce_record.ce_description}",
-        extra={"ce_record": ce_record.dict()},
+        extra={"ce_record": ce_record.model_dump()},
     )
     db.commit()
     db.refresh(ce_record_to_update)

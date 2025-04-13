@@ -12,3 +12,4 @@ def log_action(user, action: str, target: str = "", extra: dict = {}):
         target=target,
         extra=extra
     ).info("User action")
+

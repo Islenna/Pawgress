@@ -19,13 +19,13 @@ router = APIRouter(
 def create_skill(skill: SkillCreate, 
                 db: Session = Depends(get_db),
                 current_user: UserModel = Depends(get_current_user)):
-    db_skill = SkillModel(**skill.dict())
+    db_skill = SkillModel(**skill.model_dump())
 
     # Check if the skill already exists
     existing_skill = db.query(SkillModel).filter(SkillModel.name == skill.name).first()
     if existing_skill:
         raise HTTPException(status_code=400, detail="Skill already exists")
-    log_action(current_user, "create_skill", target=f"skill {skill.name}", extra={"skill": skill.dict()})
+    log_action(current_user, "create_skill", target=f"skill {skill.name}", extra={"skill": skill.model_dump()})
     db.add(db_skill)
     db.commit()
     db.refresh(db_skill)
@@ -67,15 +67,15 @@ def update_skill(skill_id: int, skill: SkillCreate,
     if not db_skill:
         raise HTTPException(status_code=404, detail="Skill not found")
     
-    for key, value in skill.dict().items():
+    for key, value in skill.model_dump().items():
         setattr(db_skill, key, value)
-    log_action(current_user, "update_skill", target=f"skill {skill.name}", extra={"skill": skill.dict()})
+    log_action(current_user, "update_skill", target=f"skill {skill.name}", extra={"skill": skill.model_dump()})
     db.commit()
     db.refresh(db_skill)
     return db_skill
 
 # Delete skill
-@router.delete("/{skill_id}", response_model=SkillSchema)
+@router.delete("/{skill_id}")
 def delete_skill(skill_id: int, 
                 db: Session = Depends(get_db),
                 current_user: UserModel = Depends(get_current_user)):
@@ -86,6 +86,6 @@ def delete_skill(skill_id: int,
 
     db.delete(db_skill)
     db.commit()
-    return db_skill
+    return {"detail": "Skill deleted successfully"}
 
 SkillRouter = router
