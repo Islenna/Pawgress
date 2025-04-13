@@ -46,7 +46,18 @@ app = FastAPI()
 def root():
     return {"message": "Hello from Pawgress!"}
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Static files
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+# Create static and ce_docs directories if they don't exist
+STATIC_DIR.mkdir(exist_ok=True)
+(STATIC_DIR / "ce_docs").mkdir(exist_ok=True)
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+print(f"📂 Serving static files from: {STATIC_DIR}")
+
+
+
 #CORS
 app.add_middleware(
     CORSMiddleware,

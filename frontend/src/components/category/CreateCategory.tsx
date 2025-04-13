@@ -1,5 +1,6 @@
 import Form, { Field } from './../shared/Form'
 import axiosInstance from "@/lib/axiosInstance"
+import { toast } from 'sonner'
 
 type CreateCategoryProps = {
     onSuccess: () => void
@@ -8,7 +9,7 @@ type CreateCategoryProps = {
 const CreateCategory = ({ onSuccess }: CreateCategoryProps) => {
     const handleSubmit = async (data: Record<string, string>) => {
         await axiosInstance.post("/categories", data)
-        alert("Category created!")
+        toast.success("Category created!")
         onSuccess()
     }
 

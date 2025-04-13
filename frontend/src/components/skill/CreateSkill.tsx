@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
 import Form, { Field } from "../shared/Form"
+import { toast } from "sonner"
 
 type CreateSkillProps = {
     onSuccess: () => void
@@ -22,7 +23,7 @@ const CreateSkill = ({ onSuccess }: CreateSkillProps) => {
 
     const handleSubmit = async (data: Record<string, string>) => {
         await axiosInstance.post("/skills", data)
-        alert("Skill created!")
+        toast.success("Skill created!")
         onSuccess() // 🧠 refetch data in parent
     }
 

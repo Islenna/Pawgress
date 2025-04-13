@@ -11,12 +11,15 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select"
+
 export type Field = {
     name: string
     label: string
-    type: "text" | "textarea" | "select"
-    options?: { label: string, value: string }[] // for select
+    type: FieldType
+    options?: { label: string, value: string }[]
 }
+
+type FieldType = "text" | "textarea" | "select" | "date"
 
 interface FormProps {
     fields: Field[]
@@ -55,6 +58,14 @@ const Form = ({ fields, onSubmit, defaultValues = {} }: FormProps) => {
                             onChange={(e) => handleChange(field.name, e.target.value)}
                         />
                     )}
+                    {field.type === "date" && (
+                        <Input
+                            id={field.name}
+                            type="date"
+                            value={formData[field.name] || ""}
+                            onChange={(e) => handleChange(field.name, e.target.value)}
+                        />
+                    )}
                     {field.type === "select" && field.options && (
                         <Select onValueChange={(val) => handleChange(field.name, val)}>
                             <SelectTrigger id={field.name}>
@@ -71,7 +82,7 @@ const Form = ({ fields, onSubmit, defaultValues = {} }: FormProps) => {
 
 
                     )}
-                    
+
                 </div>
             ))}
             <Button type="submit">Submit</Button>
