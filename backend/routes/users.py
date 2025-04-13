@@ -63,7 +63,7 @@ def get_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db), cur
 def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
 
-# Get user with proficiencies (protected)
+# Get my proficiencies (protected)
 @router.get("/mine", response_model=List[ProficiencyWithSkill])
 def get_my_proficiencies(
     db: Session = Depends(get_db),
@@ -71,11 +71,32 @@ def get_my_proficiencies(
 ):
     proficiencies = (
         db.query(ProficiencyModel)
-        .options(joinedload(ProficiencyModel.skill))
+        .options(joinedload(ProficiencyModel.skill), joinedload(ProficiencyModel.signed_off_by_user))
         .filter(ProficiencyModel.user_id == current_user.id)
         .all()
     )
-    return proficiencies
+
+    result = []
+    for prof in proficiencies:
+        result.append({
+            "id": prof.id,
+            "user_id": prof.user_id,
+            "skill_id": prof.skill_id,
+            "skill_name": prof.skill.name if prof.skill else None,
+            "proficiency": prof.proficiency,
+            "signed_off_by": prof.signed_off_by,
+            "signed_off_at": prof.signed_off_at,
+            "signed_off_by_user": {
+                "id": prof.signed_off_by_user.id,
+                "first_name": prof.signed_off_by_user.first_name,
+                "last_name": prof.signed_off_by_user.last_name
+            } if prof.signed_off_by_user else None
+        })
+
+    return result
+
+
+
 
 #Change Password (protected)
 @router.put("/update-password")

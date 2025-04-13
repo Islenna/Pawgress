@@ -11,6 +11,10 @@
 - User and Admin dashboards with shared SkillAccordion component
 - Logging of activity (e.g., skill updates, logins)
 - Tailwind + Shadcn styling framework
+- Password update functionality with backend validation
+- Cleaned up username → full_name transition app-wide
+- Toggleable password input field (show/hide)
+- User registration now enforces password length via schema validation
 
 ---
 
@@ -21,7 +25,7 @@
 - [x] Admin Dashboard (Categories, Skills, Proficiencies tabs)
 - [x] Category & Skill Creation via modals
 - [x] Display & edit user proficiencies
-- [ ] Upload CE certificates (file upload + display)
+- [x] Upload CE certificates (file upload + display)
 - [ ] Show "Signed off by [Admin] on [Date]" in User view
 - [ ] Add color-coded levels to ProficiencySelector
 - [ ] Add better mobile styling for SkillAccordion
@@ -39,8 +43,8 @@
 - [x] Nested response models (user → categories → skills → proficiencies)
 - [x] Per-user skill tracking with sign-off metadata (who/when)
 - [ ] Duplicate protections on skill/category creation
-- [ ] File upload endpoint for CE docs
-- [ ] Endpoint to view CE upload history per user
+- [x] File upload endpoint for CE docs
+- [x] Endpoint to view CE upload history per user
 - [ ] Endpoint for CSV export of skill data per clinic or user
 - [ ] Onboarding seeder for demo mode (create dummy users/data)
 

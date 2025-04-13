@@ -11,13 +11,18 @@ export interface User {
 }
 
 export type Skill = {
-    id: number;
-    name: string;
-    category_id: number;
-    category_name: string;
-    description: string;
-    proficiency?: number;
-};
+    id: number
+    name: string
+    description: string
+    category_id?: number
+    proficiency?: number
+    signed_off_by?: {
+    first_name: string
+    last_name: string
+    }
+    signed_off_at?: string
+}
+
 
 export type Category = {
     id: number;

@@ -15,20 +15,26 @@ const SkillsPage = () => {
                 axiosInstance.get("/users/mine"),
             ])
 
-            const profMap = new Map<number, number>()
+            const profMap = new Map<number, any>()
             proficienciesRes.data.forEach((p: any) => {
-                profMap.set(p.skill.id, p.proficiency)
+                profMap.set(p.skill_id, p) // Store the whole prof, not just the int
             })
 
             const merged = categoriesRes.data.map((cat: any) => ({
                 ...cat,
-                skills: cat.skills.map((skill: any) => ({
-                    ...skill,
-                    proficiency: profMap.get(skill.id) ?? 0,
-                })),
-            }))
-
+                skills: cat.skills.map((skill: any) => {
+                    const prof = profMap.get(skill.id)
+                    return {
+                        ...skill,
+                        proficiency: prof?.proficiency ?? 0,
+                        signed_off_by: prof?.signed_off_by || null,
+                        signed_off_at: prof?.signed_off_at || null
+                    }
+                })
+            })) // ← This closing paren was missing
+            
             setCategories(merged)
+            
         }
 
         fetchData()
