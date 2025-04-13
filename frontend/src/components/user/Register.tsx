@@ -28,6 +28,11 @@ const Register = () => {
             setError("Passwords do not match.")
             return
         }
+        if (password.length < 8) {
+            toast.error("Password must be at least 8 characters long.")
+            return
+        }
+        
 
         try {
             const payload: Record<string, any> = {

@@ -5,17 +5,19 @@ from backend.config.database import get_db
 from backend.models.User import User as UserModel
 from backend.schemas.user_schema import UserSchema, UserCreate
 from backend.utils.user_utils import create_and_return_user
-from backend.utils.auth import hash_password
+from backend.utils.auth import hash_password, verify_password
 from backend.utils.dependencies import get_current_user
-from backend.schemas.user_schema import UserWithProficiencies
+from backend.schemas.user_schema import UserWithProficiencies, PasswordUpdate
 from backend.models.Proficiency import Proficiency as ProficiencyModel
 from backend.schemas.proficiency_schema import ProficiencyWithSkill
 from backend.utils.logger import log_action
+
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
 )
+
 
 # Create a new user (protected, optional — mostly for admin use)
 @router.post("/", response_model=UserSchema)
@@ -75,6 +77,20 @@ def get_my_proficiencies(
     )
     return proficiencies
 
+#Change Password (protected)
+@router.put("/update-password")
+def update_password(
+    data: PasswordUpdate,
+    db: Session = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    if not verify_password(data.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Incorrect current password")
+
+    current_user.hashed_password = hash_password(data.new_password)
+    db.commit()
+
+    return {"message": "Password updated successfully"}
 # Get a user by ID (protected)
 @router.get("/{user_id}", response_model=UserWithProficiencies)
 def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):

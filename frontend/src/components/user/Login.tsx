@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import PasswordInput from "../ui/PasswordInput"
 
 const Login = () => {
     const { login } = useAuth()
@@ -42,15 +43,16 @@ const Login = () => {
                         </div>
                         <div>
                             <Label htmlFor="password">Password</Label>
-                            <Input
+                            <PasswordInput
                                 id="password"
-                                type="password"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 required
                             />
+
                         </div>
+
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         <Button className="w-full" type="submit">
                             Sign In

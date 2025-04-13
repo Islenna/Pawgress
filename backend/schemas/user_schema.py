@@ -1,6 +1,5 @@
 # schemas/user_schema.py
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
 from typing import Optional
 from backend.schemas.proficiency_schema import Proficiency
@@ -14,7 +13,7 @@ class UserBase(BaseModel):
 
 class UserCreate(BaseModel):
     email: str
-    password: str
+    password: str = Field(..., min_length=8)
     first_name: str
     last_name: str
     license_number: Optional[str] = None
@@ -36,3 +35,7 @@ class UserWithProficiencies(UserSchema):
     class Config:
         from_attributes = True
         from_attributes = True  # Enable ORM mode for SQLAlchemy compatibility
+
+class PasswordUpdate(BaseModel):
+    current_password: str = Field(..., min_length=8)
+    new_password: str = Field(..., min_length=8)
