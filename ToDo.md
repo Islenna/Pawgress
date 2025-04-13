@@ -26,12 +26,12 @@
 - [x] Category & Skill Creation via modals
 - [x] Display & edit user proficiencies
 - [x] Upload CE certificates (file upload + display)
-- [ ] Show "Signed off by [Admin] on [Date]" in User view
+- [x] Show "Signed off by [Admin] on [Date]" in User view
 - [ ] Add color-coded levels to ProficiencySelector
 - [ ] Add better mobile styling for SkillAccordion
-- [ ] Filter/Search by category or skill in user view
+- [x] Filter/Search by category or skill in user view
 - [ ] Admin view/edit users (promote to admin, assign clinics)
-- [ ] Settings/Profile page for user info and license details
+- [x] Settings/Profile page for user info and license details
 
 ---
 
@@ -42,7 +42,7 @@
 - [x] Activity Logging (per-clinic visibility)
 - [x] Nested response models (user → categories → skills → proficiencies)
 - [x] Per-user skill tracking with sign-off metadata (who/when)
-- [ ] Duplicate protections on skill/category creation
+- [x] Duplicate protections on skill/category creation
 - [x] File upload endpoint for CE docs
 - [x] Endpoint to view CE upload history per user
 - [ ] Endpoint for CSV export of skill data per clinic or user

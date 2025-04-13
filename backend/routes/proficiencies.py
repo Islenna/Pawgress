@@ -8,6 +8,7 @@ from backend.utils.dependencies import get_current_user
 from backend.utils.logger import log_action
 from backend.models.Skill import Skill
 from backend.models.User import User
+from datetime import datetime
 
 router = APIRouter(
     prefix="/proficiencies",
@@ -24,6 +25,8 @@ def create_proficiency(
     db_prof = ProficiencyModel(**prof.dict())
     skill = db.query(Skill).filter(Skill.id == prof.skill_id).first()
     target_user = db.query(User).filter(User.id == prof.user_id).first()
+    db_prof.signed_off_by = current_user.id
+    db_prof.signed_off_at = datetime.utcnow()
 
     db.add(db_prof)
     db.commit()
@@ -113,6 +116,10 @@ def update_proficiency(
 
     for key, value in updated.dict().items():
         setattr(prof, key, value)
+
+    prof.signed_off_by = updated.signed_off_by  # ✅ this is what's missing
+    if not prof.signed_off_at and prof.signed_off_by:
+        prof.signed_off_at = datetime.utcnow()
 
     db.commit()
     db.refresh(prof)

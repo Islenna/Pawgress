@@ -21,6 +21,7 @@ export type Skill = {
     last_name: string
     }
     signed_off_at?: string
+    signed_off_by_user?: User // This is the user who signed off the skill
 }
 
 

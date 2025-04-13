@@ -56,12 +56,17 @@ const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAcco
 
                                                 <p className="text-sm text-muted-foreground">{skill.description}</p>
 
-                                                {skill.signed_off_by && skill.signed_off_at && (
-                                                    <p className="text-xs text-muted-foreground italic">
-                                                        Signed off by {skill.signed_off_by.first_name} {skill.signed_off_by.last_name} on{" "}
-                                                        {new Date(skill.signed_off_at).toLocaleDateString()}
+                                                {skill.signed_off_by_user && (
+                                                    <p className="text-xs italic text-muted-foreground">
+                                                        Signed off by {skill.signed_off_by_user.first_name} {skill.signed_off_by_user.last_name}
+                                                        {skill.signed_off_at && (
+                                                            <> on {new Date(skill.signed_off_at).toLocaleDateString()}</>
+                                                        )}
                                                     </p>
                                                 )}
+
+
+
                                             </div>
                                         )
                                     })

@@ -71,7 +71,10 @@ def get_my_proficiencies(
 ):
     proficiencies = (
         db.query(ProficiencyModel)
-        .options(joinedload(ProficiencyModel.skill), joinedload(ProficiencyModel.signed_off_by_user))
+        .options(
+            joinedload(ProficiencyModel.skill),
+            joinedload(ProficiencyModel.signed_off_by_user)  # ✅ This is correct
+        )
         .filter(ProficiencyModel.user_id == current_user.id)
         .all()
     )
@@ -89,14 +92,11 @@ def get_my_proficiencies(
             "signed_off_by_user": {
                 "id": prof.signed_off_by_user.id,
                 "first_name": prof.signed_off_by_user.first_name,
-                "last_name": prof.signed_off_by_user.last_name
+                "last_name": prof.signed_off_by_user.last_name,
             } if prof.signed_off_by_user else None
         })
 
     return result
-
-
-
 
 #Change Password (protected)
 @router.put("/update-password")

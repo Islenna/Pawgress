@@ -27,7 +27,7 @@ const SkillsPage = () => {
                     return {
                         ...skill,
                         proficiency: prof?.proficiency ?? 0,
-                        signed_off_by: prof?.signed_off_by || null,
+                        signed_off_by_user: prof?.signed_off_by_user || null,
                         signed_off_at: prof?.signed_off_at || null
                     }
                 })
