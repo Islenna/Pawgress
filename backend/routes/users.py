@@ -133,7 +133,7 @@ def update_user(
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_data = user.dict(exclude_unset=True)
+    user_data = user.model_dump(exclude_unset=True)
 
     if "password" in user_data:
         user_data["hashed_password"] = hash_password(user_data.pop("password"))

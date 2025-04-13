@@ -54,8 +54,8 @@
 ## 🧪 Testing
 
 - [x] Core CRUD tests (skills, categories, proficiencies)
-- [ ] Test for auth-required routes (admin vs user)
-- [ ] File upload tests (accepts valid formats, rejects large/invalid files)
+- [x] Test for auth-required routes (admin vs user)
+- [x] File upload tests (accepts valid formats, rejects large/invalid files)
 - [ ] Export tests (CSV, CE data)
 
 ---

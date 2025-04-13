@@ -1,7 +1,7 @@
 # models/Logging.py
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from backend.config.database import Base
 
 class ActivityLog(Base):
@@ -12,6 +12,6 @@ class ActivityLog(Base):
     action = Column(String(50))
     target = Column(String(100))
     details = Column(JSON, nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="logs")

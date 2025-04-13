@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Date, Text
 from sqlalchemy.orm import relationship
 from backend.config.database import Base  
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class CERecord(Base):
@@ -16,7 +16,7 @@ class CERecord(Base):
     ce_hours = Column(Float, nullable=False)
     ce_file_path = Column(Text, nullable=True)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="ce_records")
