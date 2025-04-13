@@ -22,25 +22,33 @@ router = APIRouter(
 def create_user(user: UserCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     return create_and_return_user(user, db)
 
-# Register a new user (public route)
 @router.post("/register", response_model=UserSchema)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if the user already exists
-    existing_user = db.query(UserModel).filter(UserModel.username == user.username).first()
+    # Normalize the email
+    user.email = user.email.lower().strip()
+
+    # Check if email is already taken
+    existing_user = db.query(UserModel).filter(UserModel.email == user.email).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    
-    # Create the user once
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Check if license number is already taken, only if provided
+    if user.license_number:
+        existing_license = db.query(UserModel).filter(UserModel.license_number == user.license_number).first()
+        if existing_license:
+            raise HTTPException(status_code=400, detail="License number already registered")
+
+    # Create the user
     created = create_and_return_user(user, db)
 
-    # Log the action
+    # Log it
     log_action(
         user=created,
-        action="register",
-        target=f"user {created.username}",
-        extra={"user": created.dict()}
+        action="register_user",
+        target=f"user {user.first_name} {user.last_name}",
+        extra={"user": user.dict()}
     )
-    
+
     return created
 
 # Get all users (protected)
@@ -75,14 +83,6 @@ def get_user(user_id: int, db: Session = Depends(get_db), current_user: UserMode
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-# Get a user by username (protected)
-@router.get("/username/{username}", response_model=UserSchema)
-def get_user_by_username(username: str, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
-    user = db.query(UserModel).filter(UserModel.username == username).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
 # Update a user by ID (protected)
 @router.put("/{user_id}", response_model=UserSchema)
 def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
@@ -100,7 +100,7 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), c
     log_action(
         user=current_user,
         action="update_user",
-        target=f"user {user.username}",
+        target=f"user {user.full_name}",
         extra={"user": user.dict()}
     )
 
@@ -114,12 +114,11 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: UserM
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     log_action(
         user=current_user,
         action="delete_user",
-        target=f"user {db_user.username}",
-        extra={"user": db_user.__dict__}
+        target=f"user {db_user.full_name}",
     )
     db.delete(db_user)
     db.commit()

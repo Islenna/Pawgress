@@ -6,13 +6,14 @@ from backend.utils.auth import hash_password
 
 def create_and_return_user(user_data: UserCreate, db: Session) -> UserModel:
     existing_user = db.query(UserModel).filter(
-        (UserModel.username == user_data.username) | (UserModel.email == user_data.email)
+        (UserModel.email == user_data.email)
     ).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username or email already exists")
 
     db_user = UserModel(
-        username=user_data.username,
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
         email=user_data.email,
         hashed_password=hash_password(user_data.password),
         license_number=user_data.license_number,

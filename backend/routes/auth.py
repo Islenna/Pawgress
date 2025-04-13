@@ -12,16 +12,26 @@ router = APIRouter(
 
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(UserModel).filter(
-    (UserModel.username == form_data.username) | (UserModel.email == form_data.username)
-).first()
+    # OAuth2PasswordRequestForm uses "username" field for backwards compatibility
+    # So we treat form_data.username as the email input
+    email = form_data.username.strip().lower()
+
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+
     if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    access_token = create_access_token(data={"sub": user.username, "role": user.role})
-    if not access_token:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(
+        data={
+            "sub": user.email,
+            "name": f"{user.first_name} {user.last_name}",
+            "role": user.role
+        }
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
 
 AuthRouter = router

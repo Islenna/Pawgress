@@ -12,7 +12,10 @@ const UserSelect = ({ users, value, onChange }: Props) => (
         <SelectTrigger><SelectValue placeholder="Select User" /></SelectTrigger>
         <SelectContent>
             {users.map(u => (
-                <SelectItem key={u.id} value={u.id.toString()}>{u.username}</SelectItem>
+                <SelectItem key={u.id} value={u.id.toString()}>
+                    {u.first_name} {u.last_name}
+                </SelectItem>
+
             ))}
         </SelectContent>
     </Select>

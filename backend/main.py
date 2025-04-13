@@ -10,6 +10,8 @@ from backend.config.database import Base
 from backend.models.User import User
 from backend.models.Skill import Skill
 from backend.models.Category import Category
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 
 # Load environment variables
@@ -58,6 +60,13 @@ print(f"📂 Serving static files from: {STATIC_DIR}")
 
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    print("Validation Error:", exc.errors())
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 #CORS
 app.add_middleware(
     CORSMiddleware,

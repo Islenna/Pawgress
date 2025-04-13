@@ -6,19 +6,27 @@ from typing import Optional
 from backend.schemas.proficiency_schema import Proficiency
 
 class UserBase(BaseModel):
-    username: str
+    first_name: str
+    last_name: str
     email: str
     license_number: Optional[str] = None
     license_expiry: Optional[date] = None
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: str
     password: str
+    first_name: str
+    last_name: str
+    license_number: Optional[str] = None
+    license_expiry: Optional[date] = None
+
 
 class UserSchema(UserBase):  # Renamed from `User` to avoid collision with models.User
     id: int
     is_active: bool = True
     role: str = "user"
-
+    first_name: str
+    last_name: str
     class Config:
         from_attributes = True
 
@@ -27,4 +35,4 @@ class UserWithProficiencies(UserSchema):
 
     class Config:
         from_attributes = True
-        orm_mode = True  # Enable ORM mode for SQLAlchemy compatibility
+        from_attributes = True  # Enable ORM mode for SQLAlchemy compatibility

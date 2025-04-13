@@ -21,4 +21,4 @@ class SkillWithCategory(SkillBase):
 
     class Config:
         from_attributes = True
-        orm_mode = True  # Enable ORM mode for SQLAlchemy compatibility
+        from_attributes = True  # Enable ORM mode for SQLAlchemy compatibility

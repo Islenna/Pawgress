@@ -16,7 +16,8 @@ const Login = () => {
         e.preventDefault()
         setError("")
         try {
-            await login(email, password)
+            await login(email.toLowerCase().trim(), password)
+
         } catch (err) {
             setError("Invalid login. Please try again.")
         }

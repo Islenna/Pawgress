@@ -12,12 +12,12 @@ const UserDashboard = () => {
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-            <h1 className="text-3xl font-bold">Welcome back, {user.username} 👋</h1>
+            <h1 className="text-3xl font-bold">Welcome back, {`${user.first_name} ${user.last_name}`
+} 👋</h1>
 
             <Card>
                 <CardContent className="space-y-2 p-4">
                     <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Role:</strong> {user.role}</p>
                     <p><strong>License #:</strong> {user.license_number || "Not set"}</p>
                     <p><strong>License Expiry:</strong>
                         {user.license_expiry ? new Date(user.license_expiry).toLocaleDateString() : "Not set"}

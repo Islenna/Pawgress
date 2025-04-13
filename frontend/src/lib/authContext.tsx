@@ -29,24 +29,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [token]);
 
-    const login = async (usernameOrEmail: string, password: string) => {
+    const login = async (email: string, password: string) => {
         const formData = new URLSearchParams();
-        formData.append("username", usernameOrEmail);
+        formData.append("username", email); // <- must be named 'username'
         formData.append("password", password);
-
+    
         const res = await axiosInstance.post("/auth/login", formData, {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
-
+    
         const { access_token } = res.data;
         localStorage.setItem("token", access_token);
         setToken(access_token);
-
+    
         const userRes = await axiosInstance.get("/users/me");
         setUser(userRes.data);
-        navigate("/"); // Or wherever
+        navigate("/me");
     };
-
+    
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
