@@ -1,9 +1,10 @@
+import { useState } from "react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Category } from "@/types"
-import { Button } from "@/components/ui/button" // Needed for edit button
-import { Skill } from "@/types" // Needed for skill type
+import { Button } from "@/components/ui/button"
+import { Skill } from "@/types"
 
 const proficiencyLevels: Record<number, { label: string; description: string; color: string }> = {
     1: { label: "Awareness", description: "Knows of the skill; has not performed it.", color: "text-gray-400" },
@@ -20,8 +21,9 @@ type SkillAccordionProps = {
     onDeleteClick?: (id: number) => void;
 };
 
-
 const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAccordionProps) => {
+    const [expandedId, setExpandedId] = useState<number | null>(null)
+
     return (
         <Accordion type="multiple">
             {categories.map((category) => (
@@ -33,6 +35,8 @@ const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAcco
                                 {category.skills.length > 0 ? (
                                     category.skills.map((skill) => {
                                         const level = proficiencyLevels[skill.proficiency ?? 0]
+                                        const isExpanded = expandedId === skill.id
+
                                         return (
                                             <div key={skill.id} className="space-y-1">
                                                 <div className="flex justify-between items-center">
@@ -54,7 +58,22 @@ const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAcco
                                                     </div>
                                                 </div>
 
-                                                <p className="text-sm text-muted-foreground">{skill.description}</p>
+                                                {isExpanded ? (
+                                                    <p className="text-sm text-muted-foreground">{skill.description}</p>
+                                                ) : (
+                                                    <p className="text-sm text-muted-foreground line-clamp-3">{skill.description}</p>
+                                                )}
+
+                                                {skill.description.length > 150 && (
+                                                    <button
+                                                        className="text-xs text-blue-500 underline"
+                                                        onClick={() =>
+                                                            setExpandedId(isExpanded ? null : skill.id)
+                                                        }
+                                                    >
+                                                        {isExpanded ? "Show Less" : "Read More"}
+                                                    </button>
+                                                )}
 
                                                 {skill.signed_off_by_user && (
                                                     <p className="text-xs italic text-muted-foreground">
@@ -64,14 +83,9 @@ const SkillAccordion = ({ categories, editable = false, onEditClick }: SkillAcco
                                                         )}
                                                     </p>
                                                 )}
-
-
-
                                             </div>
                                         )
                                     })
-
-
                                 ) : (
                                     <p className="text-muted-foreground">No skills assigned.</p>
                                 )}

@@ -9,7 +9,7 @@ const LoginRegister = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4">
-      <Card className="w-full max-w-md p-6 space-y-6">
+      <Card className="w-full max-w-sm mx-auto p-6 shadow-lg">
         <CardContent>
           {mode === "login" ? (
             <>

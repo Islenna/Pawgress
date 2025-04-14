@@ -38,10 +38,10 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="text-sm hover:underline">
+                            <Link to="/" className="text-sm hover:underline">
                                 Login
                             </Link>
-                            <Link to="/register" className="text-sm hover:underline">
+                            <Link to="/" className="text-sm hover:underline">
                                 Sign Up
                             </Link>
                         </>

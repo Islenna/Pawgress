@@ -42,3 +42,20 @@ export type Proficiency = {
     
 };
 
+export type Shoutout = {
+    id: number;
+    message: string;
+    created_at: string;
+    sender_first_name?: string;
+    recipient_first_name?: string;
+};
+
+export type CE = {
+    id: number;
+    user_id: number;
+    ce_type: string;
+    ce_hours: number;
+    ce_date: string; // Usually comes as a string from JSON
+    ce_approved_by?: number | null; // This is the user who approved the CE
+    ce_approved_at?: string | null; // Usually comes as a string from JSON
+};

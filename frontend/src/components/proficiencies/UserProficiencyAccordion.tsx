@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Category } from "@/types"
@@ -17,7 +18,9 @@ const UserProficiencyAccordion = ({
     onProficiencyChange,
     editable = false,
 }: UserProficiencyAccordionProps) => {
+    const [expandedId, setExpandedId] = useState<number | null>(null)
     const { user } = useAuth()
+
 
     return (
         <Accordion type="multiple">
@@ -36,8 +39,25 @@ const UserProficiencyAccordion = ({
                                                 <div className="flex justify-between items-center">
                                                     <div>
                                                         <p className="font-medium">{skill.name}</p>
-                                                        <p className="text-sm text-muted-foreground">{skill.description}</p>
+
+                                                        {expandedId === skill.id ? (
+                                                            <p className="text-sm text-muted-foreground mb-1">{skill.description}</p>
+                                                        ) : (
+                                                            <p className="text-sm text-muted-foreground line-clamp-3 mb-1">{skill.description}</p>
+                                                        )}
+
+                                                        {skill.description.length > 150 && (
+                                                            <button
+                                                                className="text-xs text-blue-500 underline"
+                                                                onClick={() =>
+                                                                    setExpandedId(expandedId === skill.id ? null : skill.id)
+                                                                }
+                                                            >
+                                                                {expandedId === skill.id ? "Show Less" : "Read More"}
+                                                            </button>
+                                                        )}
                                                     </div>
+
 
                                                     <div className="min-w-[200px]">
                                                         <ProficiencySelector

@@ -28,9 +28,9 @@
 - [x] Upload CE certificates (file upload + display)
 - [x] Show "Signed off by [Admin] on [Date]" in User view
 - [x] Add color-coded levels to ProficiencySelector
-- [ ] Add better mobile styling for SkillAccordion
+- [x] Add better mobile styling for SkillAccordion
 - [x] Filter/Search by category or skill in user view
-- [ ] Admin view/edit users (promote to admin, assign clinics [Implement])
+- [x] Admin view/edit users
 - [x] Settings/Profile page for user info and license details
 
 ---
@@ -62,10 +62,11 @@
 
 ## 💡 Future Ideas
 
-- [ ] CE credit / expenditure tracker (add CE, track hours)
+- [x] CE credit / expenditure tracker (add CE, track hours)
 - [ ] Certification expiration tracker (e.g. license renewal)
+- [ ] Add clinics, and then users to clinics.
 - [ ] Email reminders for expiring licenses or missing CE
-- [ ] Shoutout/Recognition box (e.g. “Shoutout to Jen for 10 IV catheters today!”)
+- [x] Shoutout/Recognition box (e.g. “Shoutout to Jen for 10 IV catheters today!”)
 - [ ] Demo mode for new clinics to try out features
 - [ ] Admin metrics dashboard (charts: % signed off, avg proficiency per skill)
 
@@ -82,4 +83,4 @@
 | 5     | Mentor       | Can teach and support others in mastering it         |
 
 ## Pre-Launch
--[] Adjust alembic.ini
+-[ ] Adjust alembic.ini
