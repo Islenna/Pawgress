@@ -1,12 +1,14 @@
 import os
 from sqlalchemy import create_engine
 from pathlib import Path
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 
-# 🔥 Load the .env file cleanly from project root
-env_path = Path(__file__).resolve().parents[1] / ".env"
+# ✅ Force ENV from system environment, not .env
+env_file = ".env.production"
+env_path = Path(__file__).resolve().parents[1] / env_file
+print("🚨 Hardcoded .env.production for seeding.")
+
 load_dotenv(dotenv_path=env_path)
 
 # ✅ Now read DATABASE_URL
