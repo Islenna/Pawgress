@@ -35,7 +35,24 @@ const SkillTable = ({ categories, fetchData }: SkillTableProps) => {
                 category_id: editedCategoryId
             })
             await fetchData()
+            setLocalCategories(prevCategories => {
+                return prevCategories.map(category => {
+                    if (category.id === res.data.category_id) {
+                        return {
+                            ...category,
+                            skills: category.skills.map(skill => {
+                                if (skill.id === selectedSkill.id) {
+                                    return { ...skill, name: editedName, description: editedDescription }
+                                }
+                                return skill
+                            })
+                        }
+                    }
+                    return category
+                })
+            })
             setIsOpen(false)
+
             setSelectedSkill(null)
         }
     }

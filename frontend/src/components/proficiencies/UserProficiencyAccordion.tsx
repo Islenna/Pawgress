@@ -3,7 +3,6 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Card, CardContent } from "@/components/ui/card"
 import { Category } from "@/types"
 import { ProficiencySelector } from "@/components/proficiencies/ProficiencySelector"
-import { useAuth } from "@/lib/authContext"
 
 type UserProficiencyAccordionProps = {
     categories: Category[]
@@ -19,7 +18,6 @@ const UserProficiencyAccordion = ({
     editable = false,
 }: UserProficiencyAccordionProps) => {
     const [expandedId, setExpandedId] = useState<number | null>(null)
-    const { user } = useAuth()
 
 
     return (
