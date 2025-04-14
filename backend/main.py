@@ -35,6 +35,8 @@ def create_database_if_not_exists():
     except OperationalError as e:
         print("❌ Could not create database:", e)
 
+print("🌐 ALLOWED_ORIGINS:", ALLOWED_ORIGINS)
+
 create_database_if_not_exists()
 
 #Connect to the actual DB
