@@ -5,11 +5,12 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 
 # ✅ Force ENV from system environment, not .env
-env_file = ".env.production"
+ENV = os.environ.get("ENV", "development")
+env_file = ".env.production" if ENV == "production" else ".env"
 env_path = Path(__file__).resolve().parents[1] / env_file
-print("🚨 Hardcoded .env.production for seeding.")
+load_dotenv(dotenv_path=env_path, override=True)
 
-load_dotenv(dotenv_path=env_path)
+print(f"📦 Loaded environment: {ENV} from {env_file}")
 
 # ✅ Now read DATABASE_URL
 DATABASE_URL = os.getenv("DATABASE_URL")
