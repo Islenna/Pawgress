@@ -3,3 +3,7 @@ echo .env >> .gitignore
 echo __pycache__/ >> .gitignore
 echo .vscode/ >> .gitignore
 echo dist/ >> .gitignore
+
+.env
+.env*
+.env.production
