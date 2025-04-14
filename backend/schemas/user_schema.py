@@ -43,5 +43,5 @@ class UserUpdate(BaseModel):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     license_number: Optional[str] = None
-    license_expiry: Optional[datetime] = None
+    license_expiry: Optional[date] = None
     role: Optional[str] = None
