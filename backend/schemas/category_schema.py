@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
-from backend.schemas.skill_schema import Skill  # if you want to nest skills in response
+from schemas.skill_schema import Skill  # if you want to nest skills in response
 
 class CategoryBase(BaseModel):
     name: str

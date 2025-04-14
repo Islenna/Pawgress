@@ -2,7 +2,7 @@
 from pydantic import BaseModel, ConfigDict, Field, EmailStr
 from datetime import date
 from typing import Optional
-from backend.schemas.proficiency_schema import Proficiency
+from schemas.proficiency_schema import Proficiency
 from datetime import datetime
 
 class UserBase(BaseModel):

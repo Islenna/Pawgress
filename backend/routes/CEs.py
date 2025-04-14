@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
-from backend.config.database import get_db
-from backend.utils.dependencies import get_current_user  
-from backend.utils.logger import log_action
-from backend.schemas.CE_schema import CERecordCreate, CERecord
-from backend.models.CERecord import CERecord as CERecordModel
-from backend.models.User import User as UserModel
+from config.database import get_db
+from utils.dependencies import get_current_user  
+from utils.logger import log_action
+from schemas.CE_schema import CERecordCreate, CERecord
+from models.CERecord import CERecord as CERecordModel
+from models.User import User as UserModel
 import os
 import zipfile
 from io import BytesIO

@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from backend.config.database import get_db
-from backend.models.Proficiency import Proficiency as ProficiencyModel
-from backend.schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
-from backend.utils.dependencies import get_current_user  
-from backend.utils.logger import log_action
-from backend.models.Skill import Skill
-from backend.models.User import User
+from config.database import get_db
+from models.Proficiency import Proficiency as ProficiencyModel
+from schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
+from utils.dependencies import get_current_user  
+from utils.logger import log_action
+from models.Skill import Skill
+from models.User import User
 from datetime import datetime, timezone
 
 router = APIRouter(

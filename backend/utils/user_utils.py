@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from backend.models.User import User as UserModel
-from backend.schemas.user_schema import UserCreate
-from backend.utils.auth import hash_password
+from models.User import User as UserModel
+from schemas.user_schema import UserCreate
+from utils.auth import hash_password
 
 def create_and_return_user(user_data: UserCreate, db: Session) -> UserModel:
     existing_user = db.query(UserModel).filter(

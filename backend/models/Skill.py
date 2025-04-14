@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from backend.config.database import Base
+from config.database import Base
 from typing import Optional
-from backend.models.Proficiency import Proficiency 
+from models.Proficiency import Proficiency 
 
 
 class Skill(Base):

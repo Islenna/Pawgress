@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-from backend.main import app
-from backend.utils.auth import hash_password, create_access_token
-from backend.models.Shoutout import Shoutout
+from main import app
+from utils.auth import hash_password, create_access_token
+from models.Shoutout import Shoutout
 
 client = TestClient(app)
 
@@ -17,7 +17,7 @@ def test_create_shoutout(auth_header):
 
 def test_create_shoutout_with_target(auth_header, db):
     # Add a second test user to shout out
-    from backend.models.User import User
+    from models.User import User
     user = User(
         first_name="Jane",
         last_name="Doe",

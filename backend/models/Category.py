@@ -1,7 +1,7 @@
 # models/Category.py
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.orm import relationship
-from backend.config.database import Base  # You can abstract Base into a common base module
+from config.database import Base  # You can abstract Base into a common base module
 
 class Category(Base):
     __tablename__ = "categories"

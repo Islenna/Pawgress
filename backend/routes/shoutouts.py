@@ -2,11 +2,11 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from backend.models.Shoutout import Shoutout as ShoutoutModel
-from backend.schemas.shoutout_schema import Shoutout, ShoutoutCreate
-from backend.config.database import get_db
-from backend.utils.dependencies import get_current_user
-from backend.models.User import User
+from models.Shoutout import Shoutout as ShoutoutModel
+from schemas.shoutout_schema import Shoutout, ShoutoutCreate
+from config.database import get_db
+from utils.dependencies import get_current_user
+from models.User import User
 from datetime import datetime, timezone
 from typing import List
 

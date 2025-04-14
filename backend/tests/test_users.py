@@ -1,8 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-from backend.main import app
-from backend.models.User import User as UserModel
-from backend.utils.auth import hash_password
+from main import app
+from models.User import User as UserModel
+from utils.auth import hash_password
 
 client = TestClient(app)
 

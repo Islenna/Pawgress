@@ -1,15 +1,15 @@
 from fastapi.testclient import TestClient
-from backend.main import app
-from backend.config.database import SessionLocal
-from backend.models.User import User as UserModel
-from backend.utils.auth import hash_password, create_access_token
+from main import app
+from config.database import SessionLocal
+from models.User import User as UserModel
+from utils.auth import hash_password, create_access_token
 from sqlalchemy import text
 import pytest
 
-from backend.models.Category import Category as CategoryModel
-from backend.models.Skill import Skill as SkillModel
-from backend.models.Proficiency import Proficiency as ProficiencyModel
-from backend.models.CERecord import CERecord as CERecordModel
+from models.Category import Category as CategoryModel
+from models.Skill import Skill as SkillModel
+from models.Proficiency import Proficiency as ProficiencyModel
+from models.CERecord import CERecord as CERecordModel
 
 client = TestClient(app)
 

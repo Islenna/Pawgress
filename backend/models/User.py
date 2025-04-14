@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Date, Enum as SqlEnum, 
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from enum import Enum
-from backend.config.database import Base
+from config.database import Base
 
 class RoleEnum(str, Enum):
     user = "user"

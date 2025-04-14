@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from backend.config.database import Base
+from config.database import Base
 
 class ActivityLog(Base):
     __tablename__ = "activity_logs"

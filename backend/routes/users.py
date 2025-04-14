@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session, joinedload
 from typing import List
-from backend.config.database import get_db
-from backend.models.User import User as UserModel
-from backend.schemas.user_schema import UserSchema, UserCreate
-from backend.utils.user_utils import create_and_return_user
-from backend.utils.auth import hash_password, verify_password
-from backend.utils.dependencies import get_current_user
-from backend.schemas.user_schema import UserWithProficiencies, PasswordUpdate, UserUpdate
-from backend.models.Proficiency import Proficiency as ProficiencyModel
-from backend.schemas.proficiency_schema import ProficiencyWithSkill
-from backend.utils.logger import log_action
+from config.database import get_db
+from models.User import User as UserModel
+from schemas.user_schema import UserSchema, UserCreate
+from utils.user_utils import create_and_return_user
+from utils.auth import hash_password, verify_password
+from utils.dependencies import get_current_user
+from schemas.user_schema import UserWithProficiencies, PasswordUpdate, UserUpdate
+from models.Proficiency import Proficiency as ProficiencyModel
+from schemas.proficiency_schema import ProficiencyWithSkill
+from utils.logger import log_action
 
 
 router = APIRouter(

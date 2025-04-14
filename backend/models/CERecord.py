@@ -1,7 +1,7 @@
 # models/Category.py
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime, Date, Text
 from sqlalchemy.orm import relationship
-from backend.config.database import Base  
+from config.database import Base  
 from datetime import datetime, timezone
 
 
