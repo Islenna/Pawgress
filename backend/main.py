@@ -12,14 +12,14 @@ from models.Skill import Skill
 from models.Category import Category
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 
 # Load environment variables
 load_dotenv()
 
 # Get environment variables
 DATABASE_URL = os.getenv("DATABASE_URL")
-ORIGINS = os.getenv("ALLOWED_ORIGINS")
 DB_NAME = DATABASE_URL.split("/")[-1]
 BASE_URL = DATABASE_URL.rsplit("/", 1)[0]
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
@@ -72,6 +72,8 @@ async def validation_exception_handler(request, exc):
     )
 
 #CORS
+app.add_middleware(ProxyHeadersMiddleware)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[ALLOWED_ORIGINS] if ALLOWED_ORIGINS else ["*"],
