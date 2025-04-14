@@ -9,7 +9,7 @@ type Props = {
     onChange: (val: string) => void
 }
 
-const UserSearchSelect = ({ users, value, onChange }: Props) => {
+const UserSearchSelect = ({ users, onChange }: Props) => {
     const [searchQuery, setSearchQuery] = useState("")
     const [showDropdown, setShowDropdown] = useState(false)
 
