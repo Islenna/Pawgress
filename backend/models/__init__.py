@@ -3,5 +3,6 @@ from backend.models.Skill import Skill
 from backend.models.Category import Category
 from backend.models.Proficiency import Proficiency
 from backend.models.CERecord import CERecord
+from backend.models.Shoutout import Shoutout
 
-__all__ = ["User", "Skill", "Category", "Proficiency", "CERecord"]
+__all__ = ["User", "Skill", "Category", "Proficiency", "CERecord", "Shoutout"]

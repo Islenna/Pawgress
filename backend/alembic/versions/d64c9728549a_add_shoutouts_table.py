@@ -1,8 +1,8 @@
-"""Add CERecord model
+"""Add shoutouts table
 
-Revision ID: 620f9354de50
-Revises: 
-Create Date: 2025-04-12 12:14:46.858403
+Revision ID: d64c9728549a
+Revises: e1ce948fd311
+Create Date: 2025-04-13 19:59:37.633734
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '620f9354de50'
-down_revision: Union[str, None] = None
+revision: str = 'd64c9728549a'
+down_revision: Union[str, None] = 'e1ce948fd311'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

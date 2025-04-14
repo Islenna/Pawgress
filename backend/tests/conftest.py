@@ -48,7 +48,14 @@ def clean_test_data(db):
         WHERE name LIKE 'Test%' OR name LIKE 'Update%' OR name LIKE 'Delete%'
     """))
 
-    # 5. Delete Users (last, after dependents)
+    #5 Delete Shoutouts
+    db.execute(text("""
+        DELETE FROM shoutouts
+        WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@example.com')
+        OR target_user_id IN (SELECT id FROM users WHERE email LIKE '%@example.com')
+    """))
+
+    # 6. Delete Users (last, after dependents)
     db.execute(text("""
         DELETE FROM users
         WHERE email LIKE '%@example.com'

@@ -82,6 +82,7 @@ from backend.routes.skills import SkillRouter
 from backend.routes.categories import CategoryRouter
 from backend.routes.proficiencies import ProficiencyRouter
 from backend.routes.CEs import CERouter
+from backend.routes.shoutouts import ShoutoutRouter
 from backend.routes.auth import AuthRouter
 
 app.include_router(UserRouter, prefix="/api", tags=["Users"])
@@ -89,4 +90,5 @@ app.include_router(SkillRouter, prefix="/api", tags=["Skills"])
 app.include_router(CategoryRouter, prefix="/api", tags=["Categories"])
 app.include_router(ProficiencyRouter, prefix="/api", tags=["Proficiencies"])
 app.include_router(CERouter, prefix="/api", tags=["CEs"])
+app.include_router(ShoutoutRouter, prefix="/api", tags=["Shoutouts"])
 app.include_router(AuthRouter, prefix="/api", tags=["Auth"])

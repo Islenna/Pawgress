@@ -7,6 +7,7 @@ from backend.schemas.shoutout_schema import Shoutout, ShoutoutCreate
 from backend.config.database import get_db
 from backend.utils.dependencies import get_current_user
 from backend.models.User import User
+from datetime import datetime, timezone
 
 router = APIRouter(
     prefix="/shoutouts",
@@ -14,12 +15,29 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=Shoutout)
-def create_shoutout(shoutout: ShoutoutCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    db_shoutout = ShoutoutModel(message=shoutout.message, user_id=current_user.id)
+def create_shoutout(
+    shoutout: ShoutoutCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    db_shoutout = ShoutoutModel(
+        message=shoutout.message,
+        user_id=current_user.id,
+        target_user_id=shoutout.target_user_id,
+        created_at=datetime.now(timezone.utc)
+    )
     db.add(db_shoutout)
     db.commit()
     db.refresh(db_shoutout)
-    return db_shoutout
+
+    target_user = db.query(User).filter(User.id == shoutout.target_user_id).first() if shoutout.target_user_id else None
+
+    return {
+        **db_shoutout.__dict__,
+        "sender_first_name": current_user.first_name,
+        "recipient_first_name": target_user.first_name if target_user else None
+    }
+
 
 @router.get("/", response_model=list[Shoutout])
 def get_shoutouts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -35,3 +53,5 @@ def delete_shoutout(shoutout_id: int, db: Session = Depends(get_db), current_use
     db.delete(shoutout)
     db.commit()
     return {"detail": "Shoutout deleted"}
+
+ShoutoutRouter = router
