@@ -12,7 +12,7 @@ from models.Skill import Skill
 from models.Category import Category
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+
 
 # Load environment variables
 load_dotenv()
@@ -72,8 +72,6 @@ async def validation_exception_handler(request, exc):
     )
 
 #CORS
-app.add_middleware(ProxyHeadersMiddleware)
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[ALLOWED_ORIGINS] if ALLOWED_ORIGINS else ["*"],
