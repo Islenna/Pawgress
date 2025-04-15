@@ -35,9 +35,8 @@ const Navbar = () => {
                             {user?.role !== "user" && (
                                 <Link
                                     to="/admin/metrics"
-                                    className="text-muted-foreground hover:text-white transition"
-                                >
-                                    📈 Metrics
+                                    className="text-sm hover:underline">
+                                    Metrics
                                 </Link>
                             )}
                             <Button variant="destructive" size="sm" onClick={logout}>
@@ -83,9 +82,8 @@ const Navbar = () => {
                             {user?.role !== "user" && (
                                 <Link
                                     to="/admin/metrics"
-                                    className="text-muted-foreground hover:text-white transition"
-                                >
-                                    📈 Metrics
+                                    className="text-sm hover:underline">
+                                    Metrics
                                 </Link>
                             )}
 
