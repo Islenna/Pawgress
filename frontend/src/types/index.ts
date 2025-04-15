@@ -59,3 +59,16 @@ export type CE = {
     ce_approved_by?: number | null; // This is the user who approved the CE
     ce_approved_at?: string | null; // Usually comes as a string from JSON
 };
+
+export type MetricsResponse = {
+    total_skills: number
+    total_proficiencies: number
+    signed_off_proficiencies: number
+    avg_proficiency_per_skill: Record<number, number> // skill_id -> avg
+    category_breakdown: {
+    category: string
+    total: number
+    signed_off: number
+    avg_proficiency: number
+    }[]
+}

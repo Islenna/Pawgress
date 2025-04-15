@@ -13,7 +13,7 @@ const Navbar = () => {
     const closeMenu = () => setIsOpen(false)
 
     return (
-        
+
         <header className="bg-background border-b border-border shadow-sm">
             <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
                 <Link to="/" className="text-xl font-bold" onClick={closeMenu}>
@@ -30,6 +30,14 @@ const Navbar = () => {
                             {(user.role === "admin" || user.role === "superuser") && (
                                 <Link to="/admin" className="text-sm hover:underline">
                                     Admin
+                                </Link>
+                            )}
+                            {user?.role !== "user" && (
+                                <Link
+                                    to="/admin/metrics"
+                                    className="text-muted-foreground hover:text-white transition"
+                                >
+                                    📈 Metrics
                                 </Link>
                             )}
                             <Button variant="destructive" size="sm" onClick={logout}>
@@ -71,6 +79,16 @@ const Navbar = () => {
                                     Admin
                                 </Link>
                             )}
+
+                            {user?.role !== "user" && (
+                                <Link
+                                    to="/admin/metrics"
+                                    className="text-muted-foreground hover:text-white transition"
+                                >
+                                    📈 Metrics
+                                </Link>
+                            )}
+
                             <Button
                                 variant="destructive"
                                 size="sm"
