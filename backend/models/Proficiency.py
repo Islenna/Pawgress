@@ -8,8 +8,8 @@ class Proficiency(Base):
     __tablename__ = "proficiencies"
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    skill_id = Column(Integer, ForeignKey("skills.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    skill_id = Column(Integer, ForeignKey("skills.id"), nullable=False)
 
     proficiency = Column(Integer)  # 0-5 scale
     signed_off_by = Column(Integer, ForeignKey("users.id"), nullable=True)

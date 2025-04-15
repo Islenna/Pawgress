@@ -6,6 +6,18 @@ from models import User, Skill, Category, Proficiency, CERecord
 
 from alembic import context
 
+import sys
+import os
+from pathlib import Path
+
+# Add the base directory to PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+# Load environment variables if needed
+from dotenv import load_dotenv
+load_dotenv()
+
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
