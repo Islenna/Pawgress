@@ -34,6 +34,12 @@
 - [x] Admin view/edit users
 - [x] Settings/Profile page for user info and license details
 - [x] Prevent users changing Superuser's role
+    ### Admin Metrics
+    - [ ] New AdminMetrics Page
+    - [ ] Chart components
+    - [ ] Display
+
+
 ---
 
 ## 🛠️ Backend
@@ -49,6 +55,12 @@
 - [x] Better UX for finding users to assign proficiencies.
 - [ ] Endpoint for CSV export of skill data per clinic or user
 - [ ] Onboarding seeder for demo mode (create dummy users/data)
+
+    ### Admin Metrics
+    - [ ] New route
+    - [ ] Number of signed-off proficiencies
+    - [ ] Avg proficiency per skill
+    - [ ] Breakdown per category
 
 ---
 
@@ -82,5 +94,3 @@
 | 3     | Independent  | Can perform confidently without help                 |
 | 4     | Competent    | Trusted to handle this skill in tough scenarios      |
 | 5     | Mentor       | Can teach and support others in mastering it         |
-
-## Pre-Launch

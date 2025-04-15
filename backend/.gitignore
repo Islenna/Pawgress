@@ -2,3 +2,8 @@
 # Ignore seed and sensitive scripts
 scripts/seed.py
 seed.py
+# Ignore all .env files in the scripts directory
+scripts/*
+
+#ignore all static files
+static/*
