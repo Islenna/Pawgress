@@ -35,6 +35,8 @@ const CEManagement = () => {
     const [editingId, setEditingId] = useState<number | null>(null)
     const [editFormData, setEditFormData] = useState<Record<string, string>>({})
     const [editUploadFile, setEditUploadFile] = useState<File | null>(null)
+    const [visiblePreviewId, setVisiblePreviewId] = useState<number | null>(null);
+
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -132,9 +134,10 @@ const CEManagement = () => {
 
     }
     const isImage = (path?: string) => !!path && /\.(png|jpe?g|gif)$/i.test(path)
+    const isPDF = (path?: string) => !!path && /\.pdf$/i.test(path)
     const handleDownloadAll = async () => {
         try {
-            const response = await axiosInstance.get(`/ce_records/${user?.id}/download`, {
+            const response = await axiosInstance.get(`/ce_records/user/${user?.id}/download-all`, {
                 responseType: "blob",
             })
             const url = window.URL.createObjectURL(new Blob([response.data]))
@@ -144,15 +147,13 @@ const CEManagement = () => {
             document.body.appendChild(link)
             link.click()
             toast.success("Certificates downloaded!")
-        }
-        catch (err) {
+        } catch (err) {
             console.error("Error downloading certificates", err)
             toast.error("Failed to download certificates.")
         }
-
     }
-    
-    void handleDownloadAll
+
+
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
             <h1 className="text-3xl font-bold mb-4">📚 CE Management</h1>
@@ -180,12 +181,11 @@ const CEManagement = () => {
             </div>
             <Button
                 variant="outline"
-                onClick={() => {
-                    window.open(`${BACKEND_URL}/api/ce_records/user/${user?.id}/download-all`, "_blank")
-                }}
+                onClick={handleDownloadAll}
             >
                 ⬇️ Download All CE Records
             </Button>
+
             {/* Add CE button and form */}
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">Records</h2>
@@ -223,13 +223,46 @@ const CEManagement = () => {
                                 <p><strong>Hours:</strong> {rec.ce_hours}</p>
                                 <p><strong>Description:</strong> {rec.ce_description}</p>
 
-                                {rec.ce_file_path && isImage(rec.ce_file_path) && (
-                                    <img
-                                        src={`${BACKEND_URL}${rec.ce_file_path}`}
-                                        alt="Uploaded CE File"
-                                        className="max-h-48 mt-2 rounded border"
-                                    />
+                                {rec.ce_file_path && (
+                                    <div className="mt-2 space-y-2">
+                                        <p className="text-sm font-semibold mb-1">Uploaded CE File</p>
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() =>
+                                                setVisiblePreviewId((prev) => (prev === rec.id ? null : rec.id))
+                                            }
+                                        >
+                                            {visiblePreviewId === rec.id ? "Hide Preview" : "Show Preview"}
+                                        </Button>
+
+                                        {visiblePreviewId === rec.id && (
+                                            <>
+                                                {isImage(rec.ce_file_path) ? (
+                                                    <img
+                                                        src={`${BACKEND_URL}${rec.ce_file_path}`}
+                                                        alt="CE Image"
+                                                        className="max-h-48 rounded border"
+                                                    />
+                                                ) : isPDF(rec.ce_file_path) ? (
+                                                    <iframe
+                                                        src={`${BACKEND_URL}${rec.ce_file_path}`}
+                                                        title="CE PDF Preview"
+                                                        className="w-full h-64 border rounded"
+                                                    />
+                                                ) : (
+                                                    <p className="text-sm text-muted-foreground">
+                                                        🧾 Unsupported preview – file available for download
+                                                    </p>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 )}
+
+
+
 
 
 

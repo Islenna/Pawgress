@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, BackgroundTasks
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
@@ -9,19 +9,20 @@ from schemas.CE_schema import CERecordCreate, CERecord
 from models.CERecord import CERecord as CERecordModel
 from models.User import User as UserModel
 import os
-import zipfile
-from io import BytesIO
+from zipfile import ZipFile
 from uuid import uuid4
 from pathlib import Path
+import tempfile
+import re
 
 router= APIRouter(
     prefix="/ce_records",
     tags=["CE Records"],
 )
 
-
 UPLOAD_DIR = Path(__file__).resolve().parent.parent / "static" / "ce_docs"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "static", "ce_docs")
 
 # Create a new CE record entry
 @router.post("/", response_model=CERecord)
@@ -58,7 +59,12 @@ async def upload_ce_file(
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail="Unsupported file type.")
 
-    filename = f"{uuid4()}_{file.filename}"
+    def sanitize_filename(filename: str) -> str:
+        name, ext = os.path.splitext(filename)
+        safe_name = re.sub(r"[^\w\-_.]", "_", name)  # Replace sketchy chars
+        return f"{uuid4()}_{safe_name}{ext}"
+
+    filename = sanitize_filename(file.filename)  # ✅ Use the sanitizer here
     file_path = UPLOAD_DIR / filename
 
     with open(file_path, "wb") as buffer:
@@ -67,7 +73,12 @@ async def upload_ce_file(
     ce_record.ce_file_path = f"/static/ce_docs/{filename}"
     db.commit()
 
-    log_action(current_user, "upload_ce_file", target=f"CE record {ce_record.ce_description}", extra={"file": filename})
+    log_action(
+        current_user,
+        "upload_ce_file",
+        target=f"CE record {ce_record.ce_description}",
+        extra={"file": filename}
+    )
     return {"message": "File uploaded successfully", "filename": filename}
 
 # Get all CE records for a user
@@ -115,23 +126,36 @@ async def update_ce_record(
 
 # Download all CE documents for a user
 @router.get("/user/{user_id}/download-all")
-async def download_all_ce_docs(
+def download_all_ce_files(
     user_id: int,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: UserModel = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user)
 ):
+    if current_user.id != user_id and current_user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
     records = db.query(CERecordModel).filter(CERecordModel.user_id == user_id).all()
-    zip_buffer = BytesIO()
+    files = [
+        os.path.join(STATIC_DIR, os.path.basename(r.ce_file_path))
+        for r in records
+        if r.ce_file_path and os.path.exists(os.path.join(STATIC_DIR, os.path.basename(r.ce_file_path)))
+    ]
 
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        for rec in records:
-            if rec.ce_file_path:
-                file_path = Path("backend") / rec.ce_file_path.lstrip("/")
-                if file_path.exists():
-                    zip_file.write(file_path, arcname=file_path.name)
+    if not files:
+        raise HTTPException(status_code=404, detail="No CE files found")
+    #Temporary directory for the zip file
+    temp_dir = tempfile.gettempdir()
+    zip_name = os.path.join(temp_dir, f"ce_user_{user_id}.zip")
+    # Create a zip file
+    with ZipFile(zip_name, 'w') as zipf:
+        for file in files:
+            zipf.write(file, arcname=os.path.basename(file))
 
-    zip_buffer.seek(0)
-    return FileResponse(zip_buffer, media_type="application/zip", filename="ce_documents.zip")
+    # Schedule file deletion after response
+    background_tasks.add_task(os.remove, zip_name)
+
+    return FileResponse(zip_name, filename=f"ce_records_user_{user_id}.zip", media_type="application/zip")
 
 # Delete a CE record entry
 @router.delete("/{ce_record_id}", response_model=CERecord)
