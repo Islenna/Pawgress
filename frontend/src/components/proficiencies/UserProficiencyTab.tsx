@@ -80,7 +80,8 @@ const UserProficiencyTab = () => {
                 )}
             </div>
 
-            {selectedUser && (
+            {/* ✅ Only visible to superusers */}
+            {user?.role === "superuser" && selectedUser && (
                 <div className="bg-muted p-3 rounded-md border mb-2">
                     <p className="text-sm font-medium mb-1">
                         Edit role for <span className="font-semibold">{selectedUser.first_name} {selectedUser.last_name}</span>
@@ -90,6 +91,7 @@ const UserProficiencyTab = () => {
                         <select
                             className="border rounded px-2 py-1 bg-background text-foreground"
                             value={selectedUser.role}
+                            disabled={selectedUser.role === "superuser"}
                             onChange={async (e) => {
                                 const newRole = e.target.value
                                 try {

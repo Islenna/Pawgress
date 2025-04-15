@@ -135,6 +135,14 @@ def update_user(
 
     user_data = user.model_dump(exclude_unset=True)
 
+    # 🔒 Prevent role changes to superusers
+    if db_user.role == "superuser" and "role" in user_data and user_data["role"] != "superuser":
+        raise HTTPException(status_code=403, detail="Cannot modify superuser role")
+
+    # 🛡️ Optionally: prevent non-superusers from changing any roles
+    if "role" in user_data and current_user.role != "superuser":
+        raise HTTPException(status_code=403, detail="Only superusers can modify roles")
+
     if "password" in user_data:
         user_data["hashed_password"] = hash_password(user_data.pop("password"))
 
@@ -151,6 +159,7 @@ def update_user(
     db.commit()
     db.refresh(db_user)
     return db_user
+
 
 
 # Delete a user by ID (protected)

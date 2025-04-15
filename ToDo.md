@@ -15,6 +15,7 @@
 - Cleaned up username → full_name transition app-wide
 - Toggleable password input field (show/hide)
 - User registration now enforces password length via schema validation
+- Hosted at Pawgress.tech!
 
 ---
 
@@ -32,7 +33,7 @@
 - [x] Filter/Search by category or skill in user view
 - [x] Admin view/edit users
 - [x] Settings/Profile page for user info and license details
-
+- [x] Prevent users changing Superuser's role
 ---
 
 ## 🛠️ Backend
@@ -83,4 +84,3 @@
 | 5     | Mentor       | Can teach and support others in mastering it         |
 
 ## Pre-Launch
--[ ] Adjust alembic.ini
