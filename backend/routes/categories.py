@@ -6,6 +6,7 @@ from models.Category import Category as CategoryModel
 from schemas.category_schema import Category as CategorySchema, CategoryCreate, CategoryWithSkills
 from utils.dependencies import get_current_user  # Assuming you have a function to get the current user
 from models.User import User as UserModel
+from utils.permissions import prevent_demo_changes
 from utils.logger import log_action
 
 router = APIRouter(
@@ -25,6 +26,9 @@ def create_category(category: CategoryCreate,
     if existing_category:
         raise HTTPException(status_code=400, detail="Category already exists")
     log_action(current_user, "create_category", target=f"category {category.name}", extra={"category": category.model_dump()})
+
+    prevent_demo_changes(current_user)
+
     db.add(db_category)
     db.commit()
     db.refresh(db_category)
@@ -76,6 +80,7 @@ def update_category(category_id: int,
         target=f"category {category_id}",
         extra={"category": category.model_dump(exclude_unset=True)}
     )
+    prevent_demo_changes(current_user)
 
     db.commit()
     db.refresh(db_category)
@@ -90,6 +95,7 @@ def delete_category(category_id: int,
     if not db_category:
         raise HTTPException(status_code=404, detail="Category not found")
     log_action(current_user, "delete_category", target=f"category {category_id}", extra={"category": db_category.__dict__})
+    prevent_demo_changes(current_user)
     db.delete(db_category)
     db.commit()
     return db_category

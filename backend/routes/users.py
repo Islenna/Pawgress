@@ -10,6 +10,7 @@ from utils.dependencies import get_current_user
 from schemas.user_schema import UserWithProficiencies, PasswordUpdate, UserUpdate
 from models.Proficiency import Proficiency as ProficiencyModel
 from schemas.proficiency_schema import ProficiencyWithSkill
+from utils.permissions import prevent_demo_changes
 from utils.logger import log_action
 
 
@@ -109,6 +110,7 @@ def update_password(
         raise HTTPException(status_code=401, detail="Incorrect current password")
 
     current_user.hashed_password = hash_password(data.new_password)
+    prevent_demo_changes(current_user)
     db.commit()
 
     return {"message": "Password updated successfully"}
@@ -155,6 +157,7 @@ def update_user(
         target=f"user {db_user.full_name}",
         extra={"user": user_data}
     )
+    prevent_demo_changes(current_user)
 
     db.commit()
     db.refresh(db_user)
@@ -174,6 +177,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: UserM
         action="delete_user",
         target=f"user {db_user.full_name}",
     )
+    prevent_demo_changes(current_user)
     db.delete(db_user)
     db.commit()
     return db_user

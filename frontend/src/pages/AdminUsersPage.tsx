@@ -45,6 +45,7 @@ function AdminUsersPage() {
     if (users.length === 0) return <p className="text-center mt-10 text-muted-foreground">No users found.</p>
     // Delete Functionality
     const handleDelete = async (userId: number) => {
+        
         if (confirm("Are you sure you want to delete this user?")) {
             try {
                 await axiosInstance.delete(`/users/${userId}`)

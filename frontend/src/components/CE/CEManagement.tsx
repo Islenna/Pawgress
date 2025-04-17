@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
+import { blockDemoAction } from "@/lib/permissions"
 
 type CERecord = {
     id: number
@@ -57,6 +58,7 @@ const CEManagement = () => {
     const totalHours = records.reduce((sum, record) => sum + record.ce_hours, 0)
 
     const handleCECreate = async (data: Record<string, string>) => {
+        if (blockDemoAction(user)) return
         if (
             !data.ce_type.trim() ||
             !data.ce_date ||
@@ -106,6 +108,7 @@ const CEManagement = () => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
     const handleCEUpdate = async (id: number, data: Record<string, string>) => {
+        if (blockDemoAction(user)) return
         try {
             await axiosInstance.put(`/ce_records/${id}`, {
                 ...data,
@@ -136,6 +139,7 @@ const CEManagement = () => {
     const isImage = (path?: string) => !!path && /\.(png|jpe?g|gif)$/i.test(path)
     const isPDF = (path?: string) => !!path && /\.pdf$/i.test(path)
     const handleDownloadAll = async () => {
+        if (blockDemoAction(user)) return
         try {
             const response = await axiosInstance.get(`/ce_records/user/${user?.id}/download-all`, {
                 responseType: "blob",

@@ -15,6 +15,7 @@ import CommonModal from "@/components/shared/Modal"
 import ShoutoutFeed from "@/components/shoutout/ShoutoutFeed"
 import ShoutoutForm from "@/components/shoutout/ShoutoutForm"
 import { Shoutout } from "@/types"
+import { blockDemoAction } from "@/lib/permissions"
 
 const UserDashboard = () => {
     const { user, setUser } = useAuth()
@@ -54,6 +55,7 @@ const UserDashboard = () => {
     }, [firstName, lastName, licenseNumber, licenseExpiry, user])
 
     const handlePasswordUpdate = async () => {
+        if (blockDemoAction(user)) return
         if (newPassword !== confirmPassword) {
             toast.error("New passwords do not match.")
             return
@@ -83,6 +85,7 @@ const UserDashboard = () => {
         return <p className="text-center mt-10 text-muted-foreground">Loading user info...</p>
     }
     const handleUpdateUser = async () => {
+        if (blockDemoAction(user)) return
         try {
             await axiosInstance.put(`/users/${user!.id}`, {
                 first_name: firstName,

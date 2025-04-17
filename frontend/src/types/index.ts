@@ -8,6 +8,7 @@ export interface User {
     is_active: boolean;
     license_number?: string | null;
     license_expiry?: string | null; // Usually comes as a string from JSON
+    is_demo_user: boolean;
 }
 
 export type Skill = {

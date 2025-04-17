@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import UserSearchSelect from "@/components/proficiencies/UserSearchSelect"
 import { User } from "@/types"
+import { blockDemoAction } from "@/lib/permissions"
+import { useAuth } from "@/lib/authContext"
 
 type ShoutoutFormProps = {
     onClose: () => void
@@ -12,6 +14,7 @@ type ShoutoutFormProps = {
 }
 
 const ShoutoutForm = ({ onClose, onShoutoutSent }: ShoutoutFormProps) => {
+    const { user } = useAuth()
     const [users, setUsers] = useState<User[]>([])
     const [message, setMessage] = useState("")
     const [targetUserId, setTargetUserId] = useState("")
@@ -23,6 +26,7 @@ const ShoutoutForm = ({ onClose, onShoutoutSent }: ShoutoutFormProps) => {
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
+        if (blockDemoAction(user)) return
         e.preventDefault()
         try {
             await axiosInstance.post("/shoutouts/", {
@@ -51,7 +55,10 @@ const ShoutoutForm = ({ onClose, onShoutoutSent }: ShoutoutFormProps) => {
 
             <div className="flex justify-end gap-2 pt-4">
                 <Button variant="outline" type="button" onClick={onClose}>Cancel</Button>
-                <Button type="submit">Send Shoutout</Button>
+                <Button type="submit" disabled={!message.trim()}>
+                    Send Shoutout
+                </Button>
+
             </div>
         </form>
     )

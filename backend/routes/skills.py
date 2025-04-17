@@ -5,7 +5,8 @@ from config.database import get_db
 from models.Skill import Skill as SkillModel
 from schemas.skill_schema import Skill as SkillSchema, SkillCreate
 from schemas.category_schema import CategoryWithSkills
-from utils.dependencies import get_current_user  # Assuming you have a function to get the current user
+from utils.dependencies import get_current_user
+from utils.permissions import prevent_demo_changes
 from models.User import User as UserModel
 from utils.logger import log_action
 
@@ -26,6 +27,7 @@ def create_skill(skill: SkillCreate,
     if existing_skill:
         raise HTTPException(status_code=400, detail="Skill already exists")
     log_action(current_user, "create_skill", target=f"skill {skill.name}", extra={"skill": skill.model_dump()})
+    prevent_demo_changes(current_user)
     db.add(db_skill)
     db.commit()
     db.refresh(db_skill)
@@ -70,6 +72,7 @@ def update_skill(skill_id: int, skill: SkillCreate,
     for key, value in skill.model_dump().items():
         setattr(db_skill, key, value)
     log_action(current_user, "update_skill", target=f"skill {skill.name}", extra={"skill": skill.model_dump()})
+    prevent_demo_changes(current_user)
     db.commit()
     db.refresh(db_skill)
     return db_skill
@@ -83,7 +86,7 @@ def delete_skill(skill_id: int,
     if not db_skill:
         raise HTTPException(status_code=404, detail="Skill not found")
     log_action(current_user, "delete_skill", target=f"skill {db_skill.name}", extra={"skill": db_skill.__dict__})
-
+    prevent_demo_changes(current_user)
     db.delete(db_skill)
     db.commit()
     return {"detail": "Skill deleted successfully"}

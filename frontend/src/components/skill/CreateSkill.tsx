@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
 import Form, { Field } from "../shared/Form"
 import { toast } from "sonner"
+import { blockDemoAction } from "@/lib/permissions"
+import { useAuth } from "@/lib/authContext"
 
 type CreateSkillProps = {
     onSuccess: () => void
@@ -10,6 +12,7 @@ type CreateSkillProps = {
 
 const CreateSkill = ({ onSuccess }: CreateSkillProps) => {
     const [categoryOptions, setCategoryOptions] = useState<{ label: string; value: string }[]>([])
+    const { user } = useAuth()
 
     useEffect(() => {
         axiosInstance.get("/categories").then(res => {
@@ -22,6 +25,7 @@ const CreateSkill = ({ onSuccess }: CreateSkillProps) => {
     }, [])
 
     const handleSubmit = async (data: Record<string, string>) => {
+        if (blockDemoAction(user)) return
         await axiosInstance.post("/skills", data)
         toast.success("Skill created!")
         onSuccess() // 🧠 refetch data in parent

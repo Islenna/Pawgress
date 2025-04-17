@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea"
 import CommonModal from "@/components/shared/Modal"
 import { Category } from "@/types"
 import { toast } from "sonner"
+import { useAuth } from "@/lib/authContext"
+import { blockDemoAction } from "@/lib/permissions"
 
 type CategoryTableProps = {
     categories: Category[]
@@ -13,6 +15,7 @@ type CategoryTableProps = {
 }
 
 const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
+    const { user } = useAuth()
     const [isOpen, setIsOpen] = useState(false)
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
     const [editedName, setEditedName] = useState("")
@@ -34,6 +37,7 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
     }
 
     const handleDelete = async () => {
+        if (blockDemoAction(user)) return
         if (!selectedCategory) return
         if (deleteConfirmText !== selectedCategory.name) {
             toast.error("Category name does not match.")
@@ -48,6 +52,7 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
 
 
     const handleSubmit = async () => {
+        if (blockDemoAction(user)) return
         if (!selectedCategory) return
 
         await axiosInstance.put(`/categories/${selectedCategory.id}`, {

@@ -6,6 +6,7 @@ import { User, Category, Proficiency } from "@/types"
 import { useAuth } from "@/lib/authContext"
 import UserProficiencyAccordion from "@/components/proficiencies/UserProficiencyAccordion"
 import { toast } from "sonner"
+import { blockDemoAction } from "@/lib/permissions"
 
 const UserProficiencyTab = () => {
     const { user } = useAuth()
@@ -30,6 +31,7 @@ const UserProficiencyTab = () => {
     const profMap = new Map(proficiencies.map(p => [p.skill_id, p.proficiency]))
 
     const handleUpdate = async (skillId: number, newValue: number) => {
+        if (blockDemoAction(user)) return
         await axiosInstance.post("/proficiencies", {
             user_id: Number(selectedUserId),
             skill_id: skillId,

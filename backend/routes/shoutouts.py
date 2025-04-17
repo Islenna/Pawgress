@@ -8,6 +8,7 @@ from config.database import get_db
 from utils.dependencies import get_current_user
 from models.User import User
 from datetime import datetime, timezone
+from utils.permissions import prevent_demo_changes
 from typing import List
 
 router = APIRouter(
@@ -30,6 +31,7 @@ def create_shoutout(
     db.add(db_shoutout)
     db.commit()
     db.refresh(db_shoutout)
+    prevent_demo_changes(current_user)
 
     target_user = db.query(User).filter(User.id == shoutout.target_user_id).first() if shoutout.target_user_id else None
 
@@ -68,6 +70,7 @@ def delete_shoutout(shoutout_id: int, db: Session = Depends(get_db), current_use
         raise HTTPException(status_code=404, detail="Shoutout not found")
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Only admins can delete shoutouts")
+    prevent_demo_changes(current_user)
     db.delete(shoutout)
     db.commit()
     return {"detail": "Shoutout deleted"}

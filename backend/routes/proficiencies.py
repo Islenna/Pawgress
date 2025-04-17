@@ -5,6 +5,7 @@ from config.database import get_db
 from models.Proficiency import Proficiency as ProficiencyModel
 from schemas.proficiency_schema import ProficiencyCreate, Proficiency as ProficiencySchema
 from utils.dependencies import get_current_user  
+from utils.permissions import prevent_demo_changes
 from utils.logger import log_action
 from models.Skill import Skill
 from models.User import User
@@ -44,7 +45,7 @@ def create_proficiency(
             "signed_off_by": signed_by.full_name if signed_by else None
         }
     )
-
+    prevent_demo_changes(current_user)
     return {
         **db_prof.__dict__,
         "signed_off_by_user": {
@@ -132,7 +133,7 @@ def update_proficiency(
         target=f"proficiency_id:{prof_id}",
         extra=updated.model_dump()
     )
-
+    prevent_demo_changes(current_user)
     return {
         **prof.__dict__,
         "signed_off_by_user": {
@@ -167,7 +168,7 @@ def delete_proficiency(
             "proficiency": prof.proficiency
         }
     )
-
+    prevent_demo_changes(current_user)
     db.delete(prof)
     db.commit()
     return {"detail": "Proficiency deleted successfully"}

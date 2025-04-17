@@ -8,6 +8,7 @@ from utils.logger import log_action
 from schemas.CE_schema import CERecordCreate, CERecord
 from models.CERecord import CERecord as CERecordModel
 from models.User import User as UserModel
+from utils.permissions import prevent_demo_changes
 import os
 from zipfile import ZipFile
 from uuid import uuid4
@@ -38,7 +39,7 @@ async def create_ce_record(
     db.refresh(new_ce_record)
 
     log_action(current_user, "create_ce_record", target=f"CE record {ce_record.ce_description}", extra={"ce_record": ce_record.model_dump()})
-
+    prevent_demo_changes(current_user)
     return new_ce_record
     
 # Upload a CE record file
@@ -79,6 +80,7 @@ async def upload_ce_file(
         target=f"CE record {ce_record.ce_description}",
         extra={"file": filename}
     )
+    prevent_demo_changes(current_user)
     return {"message": "File uploaded successfully", "filename": filename}
 
 # Get all CE records for a user
@@ -120,6 +122,7 @@ async def update_ce_record(
         target=f"CE record {ce_record.ce_description}",
         extra={"ce_record": ce_record.model_dump()},
     )
+    prevent_demo_changes(current_user)
     db.commit()
     db.refresh(ce_record_to_update)
     return ce_record_to_update
@@ -151,7 +154,7 @@ def download_all_ce_files(
     with ZipFile(zip_name, 'w') as zipf:
         for file in files:
             zipf.write(file, arcname=os.path.basename(file))
-
+    prevent_demo_changes(current_user)
     # Schedule file deletion after response
     background_tasks.add_task(os.remove, zip_name)
 
@@ -186,7 +189,7 @@ async def delete_ce_record(
         target=f"CE record {ce_record_to_delete.ce_description}",
         extra={"ce_record": ce_record_to_delete.__dict__},
     )
-
+    prevent_demo_changes(current_user)
     return ce_record_to_delete
 
 
