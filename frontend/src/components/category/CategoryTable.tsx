@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import CommonModal from "@/components/shared/Modal"
 import { Category } from "@/types"
+import { toast } from "sonner"
 
 type CategoryTableProps = {
     categories: Category[]
@@ -16,6 +17,14 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
     const [editedName, setEditedName] = useState("")
     const [editedDescription, setEditedDescription] = useState("")
+    const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+    const [deleteConfirmText, setDeleteConfirmText] = useState("")
+
+    const confirmDelete = (category: Category) => {
+        setSelectedCategory(category)
+        setDeleteConfirmText("")
+        setConfirmDeleteOpen(true)
+    }
 
     const toggleModal = (category: Category) => {
         setSelectedCategory(category)
@@ -24,10 +33,19 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
         setIsOpen(true)
     }
 
-    const handleDelete = async (id: number) => {
-        await axiosInstance.delete(`/categories/${id}`)
+    const handleDelete = async () => {
+        if (!selectedCategory) return
+        if (deleteConfirmText !== selectedCategory.name) {
+            toast.error("Category name does not match.")
+            return
+        }
+
+        await axiosInstance.delete(`/categories/${selectedCategory.id}`)
         await fetchData()
+        setConfirmDeleteOpen(false)
+        setSelectedCategory(null)
     }
+
 
     const handleSubmit = async () => {
         if (!selectedCategory) return
@@ -49,7 +67,10 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
                     <span>{cat.name}</span>
                     <div className="space-x-2">
                         <Button onClick={() => toggleModal(cat)} size="sm" variant="outline">Edit</Button>
-                        <Button onClick={() => handleDelete(cat.id)} size="sm" variant="destructive">Delete</Button>
+                        <Button onClick={() => confirmDelete(cat)} size="sm" variant="destructive">
+                            Delete
+                        </Button>
+
                     </div>
                 </div>
             ))}
@@ -75,6 +96,28 @@ const CategoryTable = ({ categories, fetchData }: CategoryTableProps) => {
                     />
                 </div>
             </CommonModal>
+            <CommonModal
+                title={`Delete Category: ${selectedCategory?.name}`}
+                isOpen={confirmDeleteOpen}
+                onClose={() => setConfirmDeleteOpen(false)}
+                onSave={handleDelete}
+                submitLabel="Confirm Deletion"
+            >
+                <p className="text-sm text-muted-foreground mb-4">
+                    This will delete <strong>all skills</strong> associated with <strong>{selectedCategory?.name}</strong>. This action <strong>cannot</strong> be undone.
+                </p>
+
+                <p className="text-sm text-muted-foreground mb-2">
+                    To confirm, type <strong>{selectedCategory?.name}</strong> below:
+                </p>
+                <Input
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder="Category name"
+                />
+            </CommonModal>
+
+
         </div>
     )
 }
