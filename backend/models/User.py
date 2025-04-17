@@ -33,7 +33,8 @@ class User(Base):
 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
+    is_demo_user = Column(Boolean, default=False)
+    
     proficiencies = relationship(
     "Proficiency",
     back_populates="user",
