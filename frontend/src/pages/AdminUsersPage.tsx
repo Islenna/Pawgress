@@ -24,7 +24,7 @@ function AdminUsersPage() {
                 const sorted = res.data.sort((a: User, b: User) =>
                     a.last_name.localeCompare(b.last_name, undefined, { sensitivity: "base" })
                 )
-                
+
                 setUsers(sorted)
             } catch (err) {
                 setError("Failed to load users")
@@ -34,10 +34,10 @@ function AdminUsersPage() {
                 setLoading(false)
             }
         }
-    
+
         fetchUsers()
     }, [])
-    
+
 
     if (loading) return <p className="text-center mt-10 text-muted-foreground">Loading users...</p>
     if (error) return <p className="text-center text-red-500">{error}</p>
@@ -58,9 +58,11 @@ function AdminUsersPage() {
     }
     // Edit Functionality (Placeholder for now)
     const handleEdit = (u: number) => {
-        // Placeholder for edit functionality
+        console.log(`Edit user with ID: ${u}`)
         toast.info("Edit functionality not implemented yet")
     }
+
+
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
             <h1 className="text-2xl font-bold text-center">User Management</h1>
@@ -76,9 +78,9 @@ function AdminUsersPage() {
                         <Separator />
                         <div className="flex gap-2 mt-2">
                             <Button variant="outline" size="sm" onClick={() => handleEdit(u.id)}>Edit</Button>
-                            <Button variant="destructive" size="sm" onClick={() => handleDelete(u.id)}>Delete</Button>
+                                <Button variant="destructive" size="sm" onClick={() => handleDelete(u.id)}>Delete</Button>
                         </div>
-                        
+
                     </CardContent>
                 </Card>
             ))}
