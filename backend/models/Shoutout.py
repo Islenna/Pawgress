@@ -10,8 +10,18 @@ class Shoutout(Base):
     message = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     
-    user_id = Column(Integer, ForeignKey("users.id"))  # creator
-    target_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # recipient
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))  # creator
+    target_user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)  # receiver
 
-    user = relationship("User", foreign_keys=[user_id], back_populates="shoutouts")
-    target_user = relationship("User", foreign_keys=[target_user_id])
+    user = relationship(
+        "User",
+        foreign_keys=[user_id],
+        back_populates="shoutouts",
+        passive_deletes=True
+    )
+    target_user = relationship(
+        "User",
+        foreign_keys=[target_user_id],
+        back_populates="shoutouts_received",
+        passive_deletes=True
+    )

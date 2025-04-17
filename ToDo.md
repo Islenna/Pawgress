@@ -35,6 +35,7 @@
 - [x] Admin view/edit users
 - [x] Settings/Profile page for user info and license details
 - [x] Prevent users changing Superuser's role
+- [ ] Frontend category deletion protection
     ### Admin Metrics
     - [x] New AdminMetrics Page
     - [x] Chart components

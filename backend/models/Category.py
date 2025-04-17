@@ -10,4 +10,4 @@ class Category(Base):
     name = Column(String(255), unique=True)
     description = Column(Text, nullable=True)
 
-    skills = relationship("Skill", back_populates="category")
+    skills = relationship("Skill", back_populates="category", passive_deletes=True)

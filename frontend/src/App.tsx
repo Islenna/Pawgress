@@ -9,7 +9,9 @@ import AdminPanel from '@/pages/AdminPanel'
 import SkillsPage from '@/components/user/SkillsPage'
 import CEManagement from './components/CE/CEManagement'
 import AdminMetricsPage from './pages/AdminMetricsPage'
+import AdminUsersPage from './pages/AdminUsersPage'
 import { Toaster } from '@/components/ui/sonner'
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
           <Route path="/skills" element={<SkillsPage />} />
           <Route path="/ce" element={<CEManagement />} />
           <Route path="/admin/metrics" element={<AdminMetricsPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
         </Routes>
         <Toaster richColors position="top-right" />
       </AuthProvider>

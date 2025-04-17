@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 class CERecord(Base):
     __tablename__ = "ce_records"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
     ce_type = Column(Text, nullable=False)
     ce_description = Column(Text, nullable=False)
@@ -19,4 +19,4 @@ class CERecord(Base):
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    user = relationship("User", back_populates="ce_records")
+    user = relationship("User", back_populates="ce_records", passive_deletes=True)

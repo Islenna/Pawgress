@@ -32,6 +32,11 @@ const Navbar = () => {
                                     Admin
                                 </Link>
                             )}
+                            {(user.role === "superuser") && (
+                                <Link to="/admin/users" className="text-sm hover:underline">
+                                    Users
+                                </Link>
+                            )}
                             {user?.role !== "user" && (
                                 <Link
                                     to="/admin/metrics"
@@ -76,6 +81,12 @@ const Navbar = () => {
                             {(user.role === "admin" || user.role === "superuser") && (
                                 <Link to="/admin" onClick={closeMenu} className="block text-sm hover:underline">
                                     Admin
+                                </Link>
+                            )}
+                            
+                            {(user.role === "superuser") && (
+                                <Link to="/admin/users" className="text-sm hover:underline">
+                                    Users
                                 </Link>
                             )}
 
