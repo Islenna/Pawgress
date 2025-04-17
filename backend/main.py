@@ -19,7 +19,6 @@ load_dotenv()
 
 # Get environment variables
 DATABASE_URL = os.getenv("DATABASE_URL")
-ORIGINS = os.getenv("ALLOWED_ORIGINS")
 DB_NAME = DATABASE_URL.split("/")[-1]
 BASE_URL = DATABASE_URL.rsplit("/", 1)[0]
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
@@ -72,14 +71,16 @@ async def validation_exception_handler(request, exc):
     )
 
 #CORS
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+print("🌐 ALLOWED_ORIGINS:", origins)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[ALLOWED_ORIGINS] if ALLOWED_ORIGINS else ["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 #Routes
 from routes.users import UserRouter
