@@ -22,7 +22,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 ORIGINS = os.getenv("ALLOWED_ORIGINS")
 DB_NAME = DATABASE_URL.split("/")[-1]
 BASE_URL = DATABASE_URL.rsplit("/", 1)[0]
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
 # Create a temporary engine WITHOUT the DB name to create it
 def create_database_if_not_exists():
