@@ -34,12 +34,12 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    # ✅ Now properly within class:
     proficiencies = relationship(
-        "Proficiency",
-        back_populates="user",
-        passive_deletes=True
-    )
+    "Proficiency",
+    back_populates="user",
+    foreign_keys="Proficiency.user_id",
+    passive_deletes=True
+)
 
     ce_records = relationship(
         "CERecord",
