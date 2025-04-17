@@ -1,6 +1,6 @@
 // src/components/dashboard/UserDashboard.tsx
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useAuth } from "@/lib/authContext"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@/components/
 import { Link } from "react-router-dom"
 import axiosInstance from "@/lib/axiosInstance"
 import { toast } from "sonner"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 import PasswordInput from "../ui/PasswordInput"
 import CommonModal from "@/components/shared/Modal"
 import ShoutoutFeed from "@/components/shoutout/ShoutoutFeed"
@@ -15,8 +17,12 @@ import ShoutoutForm from "@/components/shoutout/ShoutoutForm"
 import { Shoutout } from "@/types"
 
 const UserDashboard = () => {
-    const { user } = useAuth()
-
+    const { user, setUser } = useAuth()
+    const [firstName, setFirstName] = useState(user?.first_name || "")
+    const [lastName, setLastName] = useState(user?.last_name || "")
+    const [licenseNumber, setLicenseNumber] = useState(user?.license_number || "")
+    const [licenseExpiry, setLicenseExpiry] = useState(user?.license_expiry || "")
+    const [email, setEmail] = useState(user?.email || "")
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
@@ -37,6 +43,15 @@ const UserDashboard = () => {
     useEffect(() => {
         fetchShoutouts()
     }, [])
+
+    const hasChanges = useMemo(() => {
+        return (
+            firstName !== (user?.first_name || "") ||
+            lastName !== (user?.last_name || "") ||
+            licenseNumber !== (user?.license_number || "") ||
+            licenseExpiry !== (user?.license_expiry || "")
+        )
+    }, [firstName, lastName, licenseNumber, licenseExpiry, user])
 
     const handlePasswordUpdate = async () => {
         if (newPassword !== confirmPassword) {
@@ -62,8 +77,33 @@ const UserDashboard = () => {
         }
     }
 
+
+
     if (!user) {
         return <p className="text-center mt-10 text-muted-foreground">Loading user info...</p>
+    }
+    const handleUpdateUser = async () => {
+        try {
+            await axiosInstance.put(`/users/${user!.id}`, {
+                first_name: firstName,
+                last_name: lastName,
+                license_number: licenseNumber,
+                license_expiry: licenseExpiry,
+            })
+    
+            // Refresh updated user info into context
+            const response = await axiosInstance.get("/users/me")
+            setUser(response.data)
+    
+            toast.success("User info updated successfully!")
+        } catch (err: any) {
+            const errors = err.response?.data?.detail
+            if (Array.isArray(errors)) {
+                toast.error(errors[0]?.msg || "Update failed.")
+            } else {
+                toast.error(typeof errors === "string" ? errors : "Update failed.")
+            }
+        }
     }
 
     return (
@@ -95,8 +135,45 @@ const UserDashboard = () => {
                                     <Button variant="outline">Account Settings</Button>
                                 </DialogTrigger>
                                 <DialogContent className="space-y-4 overflow-visible max-h-screen z-[100]">
-                                    <DialogTitle>Update Password</DialogTitle>
-                                    <div className="flex flex-col gap-2">
+                                    <DialogTitle>Account Settings</DialogTitle>
+
+                                    {/* Basic Info Section */}
+                                    <div className="space-y-2">
+                                        <Input
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            placeholder="Preferred Name"
+                                        />
+                                        <Input
+                                            value={lastName}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            placeholder="Last Name"
+                                        />
+                                        <Input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="Email"
+                                            disabled
+                                        />
+                                        <Input
+                                            value={licenseNumber}
+                                            onChange={(e) => setLicenseNumber(e.target.value)}
+                                            placeholder="License Number"
+                                        />
+                                        <Input
+                                            type="date"
+                                            value={licenseExpiry}
+                                            onChange={(e) => setLicenseExpiry(e.target.value)}
+                                            placeholder="License Expiry"
+                                        />
+                                        <Button onClick={handleUpdateUser} disabled={!hasChanges}>
+                                            Update Info
+                                        </Button>
+                                    </div>
+                                    <Separator className="my-4" />
+                                    {/* Password Change Section */}
+                                    <div className="space-y-2">
                                         <PasswordInput
                                             value={currentPassword}
                                             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -115,6 +192,8 @@ const UserDashboard = () => {
                                         <Button onClick={handlePasswordUpdate}>Update Password</Button>
                                     </div>
                                 </DialogContent>
+
+
                             </Dialog>
                         </div>
                     </div>

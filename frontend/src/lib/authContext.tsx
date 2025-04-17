@@ -4,13 +4,14 @@ import axiosInstance from "@/lib/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { User } from "@/types"; // Adjust the import path as necessary
 
-
 interface AuthContextType {
     user: User | null;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
     token: string | null;
     login: (emailOrUsername: string, password: string) => Promise<void>;
     logout: () => void;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -33,20 +34,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const formData = new URLSearchParams();
         formData.append("username", email); // <- must be named 'username'
         formData.append("password", password);
-    
+
         const res = await axiosInstance.post("/auth/login", formData, {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });
-    
+
         const { access_token } = res.data;
         localStorage.setItem("token", access_token);
         setToken(access_token);
-    
+
         const userRes = await axiosInstance.get("/users/me");
         setUser(userRes.data);
         navigate("/me");
     };
-    
+
     const logout = () => {
         localStorage.removeItem("token");
         setUser(null);
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, setUser, token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

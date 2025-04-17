@@ -16,6 +16,7 @@
 - Toggleable password input field (show/hide)
 - User registration now enforces password length via schema validation
 - Hosted at Pawgress.tech!
+- Admin Metrics in place
 
 ---
 
@@ -35,9 +36,9 @@
 - [x] Settings/Profile page for user info and license details
 - [x] Prevent users changing Superuser's role
     ### Admin Metrics
-    - [ ] New AdminMetrics Page
-    - [ ] Chart components
-    - [ ] Display
+    - [x] New AdminMetrics Page
+    - [x] Chart components
+    - [x] Display
 
 
 ---
@@ -57,10 +58,10 @@
 - [ ] Onboarding seeder for demo mode (create dummy users/data)
 
     ### Admin Metrics
-    - [ ] New route
-    - [ ] Number of signed-off proficiencies
-    - [ ] Avg proficiency per skill
-    - [ ] Breakdown per category
+    - [x] New route
+    - [x] Number of signed-off proficiencies
+    - [x] Avg proficiency per skill
+    - [x] Breakdown per category
 
 ---
 
@@ -69,7 +70,7 @@
 - [x] Core CRUD tests (skills, categories, proficiencies)
 - [x] Test for auth-required routes (admin vs user)
 - [x] File upload tests (accepts valid formats, rejects large/invalid files)
-- [ ] Export tests (CSV, CE data)
+- [x] Export tests (CSV, CE data)
 
 ---
 
@@ -81,7 +82,7 @@
 - [ ] Email reminders for expiring licenses or missing CE
 - [x] Shoutout/Recognition box (e.g. “Shoutout to Jen for 10 IV catheters today!”)
 - [ ] Demo mode for new clinics to try out features
-- [ ] Admin metrics dashboard (charts: % signed off, avg proficiency per skill)
+- [x] Admin metrics dashboard (charts: % signed off, avg proficiency per skill)
 
 ---
 
