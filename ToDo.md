@@ -79,6 +79,7 @@
 
 - [x] CE credit / expenditure tracker (add CE, track hours)
 - [ ] Certification expiration tracker (e.g. license renewal)
+- [ ] User metric views
 - [ ] Add clinics, and then users to clinics.
 - [ ] Email reminders for expiring licenses or missing CE
 - [x] Shoutout/Recognition box (e.g. “Shoutout to Jen for 10 IV catheters today!”)

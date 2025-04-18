@@ -72,4 +72,53 @@ def get_metrics(
         "category_breakdown": category_breakdown
     }
 
+@router.get("/user-metrics")
+def get_user_metrics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    total_skills = db.query(Skill).filter(Skill.user_id == current_user.id).count()
+    total_profs = db.query(Proficiency).filter(Proficiency.user_id == current_user.id).count()
+    signed_off = db.query(Proficiency).filter(Proficiency.user_id == current_user.id, Proficiency.signed_off_by.isnot(None)).count()
+
+    avg_per_skill = db.query(
+        Skill.name.label("skill_name"),
+        func.avg(Proficiency.proficiency).label("avg_prof")
+    ).join(Skill, Skill.id == Proficiency.skill_id)\
+    .filter(Proficiency.user_id == current_user.id)\
+    .group_by(Skill.id, Skill.name)\
+    .all()
+
+    avg_proficiency_map = {
+        skill_name: round(avg, 2)
+        for skill_name, avg in avg_per_skill
+    }
+
+    category_breakdown = []
+    categories = db.query(Category).all()
+    for cat in categories:
+        skill_ids = [skill.id for skill in cat.skills]
+        profs = db.query(Proficiency).filter(Proficiency.skill_id.in_(skill_ids), Proficiency.user_id == current_user.id).all()
+        if not profs:
+            continue
+
+        total = len(profs)
+        signed = len([p for p in profs if p.signed_off_by])
+        avg = round(sum(p.proficiency for p in profs) / total, 2)
+
+        category_breakdown.append({
+            "category": cat.name,
+            "total": total,
+            "signed_off": signed,
+            "avg_proficiency": avg
+        })
+
+    return {
+        "total_skills": total_skills,
+        "total_proficiencies": total_profs,
+        "signed_off_proficiencies": signed_off,
+        "avg_proficiency_per_skill": avg_proficiency_map,
+        "category_breakdown": category_breakdown
+    }
+
 MetricRouter = router
