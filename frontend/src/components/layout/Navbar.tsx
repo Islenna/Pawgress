@@ -126,9 +126,13 @@ const Navbar = () => {
 
                 )}
             </header>
-            <div className="bg-yellow-200 border border-yellow-400 text-yellow-900 rounded-none text-sm py-2 px-4 text-center shadow-sm">
-                🧪 You are logged in as a demo user. Some features are read-only.
-            </div>
+
+            {/* Demo user warning */}
+            {user && user.is_demo_user && (
+                <div className="bg-yellow-200 border border-yellow-400 text-yellow-900 rounded-none text-sm py-2 px-4 text-center shadow-sm">
+                    🧪 You are logged in as a demo user. Some features are read-only.
+                </div>
+            )}
         </>
     )
 }

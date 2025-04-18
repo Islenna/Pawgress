@@ -82,7 +82,7 @@
 - [ ] Add clinics, and then users to clinics.
 - [ ] Email reminders for expiring licenses or missing CE
 - [x] Shoutout/Recognition box (e.g. “Shoutout to Jen for 10 IV catheters today!”)
-- [ ] Demo mode for new clinics to try out features
+- [x] Demo mode for new clinics to try out features
 - [x] Admin metrics dashboard (charts: % signed off, avg proficiency per skill)
 
 ---
